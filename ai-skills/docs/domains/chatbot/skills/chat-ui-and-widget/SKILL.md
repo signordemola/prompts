@@ -16,34 +16,43 @@ description: >
 
 ## useChat Hook (AI SDK v5)
 
-> **AI SDK v5 changes:** `useChat` moved from `ai/react` to `@ai-sdk/react`. Messages are now `UIMessage` (client) vs `ModelMessage` (server). Streaming uses native SSE.
+> **AI SDK v5 changes:** `useChat` moved from `ai/react` to `@ai-sdk/react`. Messages are now `UIMessage` (client) vs `ModelMessage` (server). `useChat` no longer manages input state internally — keep your own input state and call `sendMessage()`.
 
 ```tsx
 "use client"
+import { useState } from "react"
 import { useChat } from "@ai-sdk/react"
 
 export function ChatPanel() {
   const {
     messages,       // UIMessage[] — client-side conversation state
-    input,          // current input value
-    handleInputChange,
-    handleSubmit,
-    status,         // "ready" | "streaming" | "error"
+    sendMessage,    // send a user message
+    status,         // "ready" | "submitted" | "streaming" | "error"
     error,
-    reload,         // retry last message
+    regenerate,     // retry last assistant message
     stop,           // cancel streaming
   } = useChat({
     api: "/api/chat",
     body: { conversationId },
     onError: (err) => console.error("Chat error:", err),
   })
+  const [input, setInput] = useState("")
+  const isLoading = status === "submitted" || status === "streaming"
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const text = input.trim()
+    if (!text || isLoading) return
+    sendMessage({ text })
+    setInput("")
+  }
 
   return (
     <div className="chat-container">
       <MessageList messages={messages} isLoading={isLoading} />
       <ChatInput
         input={input}
-        onChange={handleInputChange}
+        onChange={(e) => setInput(e.currentTarget.value)}
         onSubmit={handleSubmit}
         isLoading={isLoading}
       />
@@ -75,12 +84,17 @@ function MessageList({ messages, isLoading }) {
 
 function MessageBubble({ message }) {
   const isUser = message.role === "user"
+  const text = message.parts
+    .filter(part => part.type === "text")
+    .map(part => part.text)
+    .join("")
+
   return (
     <div className={`message ${isUser ? "message--user" : "message--assistant"}`}>
       <div className="message__content">
-        {isUser ? message.content : <Markdown>{message.content}</Markdown>}
+        {isUser ? text : <Markdown>{text}</Markdown>}
       </div>
-      {message.sources && <SourceCitations sources={message.sources} />}
+      {message.metadata?.sources && <SourceCitations sources={message.metadata.sources} />}
     </div>
   )
 }
@@ -109,7 +123,7 @@ function ChatInput({ input, onChange, onSubmit, isLoading }) {
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault()
-            onSubmit(e)
+            e.currentTarget.form?.requestSubmit()
           }
         }}
         aria-label="Chat message"

@@ -8,7 +8,7 @@ import { vi } from "vitest"
 
 vi.mock("ai", () => ({
   streamText: vi.fn().mockReturnValue({
-    toDataStreamResponse: () => new Response("mocked response"),
+    toUIMessageStreamResponse: () => new Response("mocked response"),
     text: "I can help with that!",
     usage: { promptTokens: 100, completionTokens: 50 },
   }),

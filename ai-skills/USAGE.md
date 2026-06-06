@@ -36,7 +36,7 @@ your-project/
     ├── docs/
     │   ├── ROUTER.md       ← Central index
     │   ├── workflows/ (12) ← HOW to work
-    │   ├── skills/ (17)    ← WHAT tools to use
+    │   ├── skills/ (21)    ← WHAT tools to use
     │   ├── domains/ (3)    ← WHAT to build
     │   └── references/     ← Deep reference docs
     ├── update.sh           ← Update from GitHub
@@ -169,10 +169,11 @@ The model edits the skills, you review and push. All future projects get the fix
 | `dispatching-parallel-agents/` | 2+ independent problems to solve |
 | `self-improvement/` | Agent made a mistake, or user says "reflect" |
 
-### Skills (17)
+### Skills (21)
 
 | Skill | What |
 |-------|------|
+| `code-style/` | No comments, const arrow functions, anti-bloat |
 | `nextjs-app-router/` | Next.js App Router |
 | `nestjs/` | NestJS modular backend |
 | `fastapi/` | FastAPI Python backend |

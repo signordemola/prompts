@@ -172,10 +172,20 @@ from fastapi import APIRouter
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.get("/{user_id}", response_model=UserResponse)
+@router.get("/{user_id}")
 async def get_user(user_id: int, service: UserServiceDep) -> UserResponse:
     user = await service.get_user(user_id)
     return UserResponse.model_validate(user)
+```
+
+If the function returns ORM objects or dictionaries and you want FastAPI to filter/serialize with a Pydantic model, use `response_model` and annotate the Python return type as `Any` or the actual internal type:
+
+```python
+from typing import Any
+
+@router.get("/{user_id}", response_model=UserResponse)
+async def get_user(user_id: int, service: UserServiceDep) -> Any:
+    return await service.get_user(user_id)
 ```
 
 ## Settings (pydantic-settings)
@@ -265,4 +275,4 @@ uv run pyright app
 - ❌ Skip `expire_on_commit=False` (lazy-loading errors)
 - ❌ Hardcode secrets (use `pydantic-settings` + `SecretStr`)
 - ❌ Modify DB schema without Alembic migrations
-- ❌ Use `response_model` AND return type annotation (pick one — prefer type annotation)
+- ❌ Annotate a route as returning an ORM/internal object and expect FastAPI to infer the public schema; use a Pydantic return type or `response_model`

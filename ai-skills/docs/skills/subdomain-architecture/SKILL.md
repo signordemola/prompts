@@ -81,7 +81,7 @@ const TENANT_MAP: Record<string, string> = {
   'booking.clientc.com': 'client-c',
 };
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const tenantSlug = TENANT_MAP[hostname];
   

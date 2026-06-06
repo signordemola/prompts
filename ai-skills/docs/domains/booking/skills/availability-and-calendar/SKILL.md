@@ -138,11 +138,13 @@ const lastSlotStart = subMinutes(closeTime, service.durationMinutes + service.bu
 ### Connection Pooling (Neon/Serverless)
 
 ```ts
-// lib/prisma.ts — singleton
+// lib/prisma.ts — Prisma 6 / prisma-client-js singleton
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 export const prisma = globalForPrisma.prisma ?? new PrismaClient()
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 ```
+
+For Prisma 7, use the generated-client output path and driver adapter pattern from `docs/skills/prisma-database/SKILL.md`.
 
 ## References
 - `references/edge-cases.md` — DST transitions, midnight boundary
@@ -155,4 +157,3 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 - ❌ Return past time slots
 - ❌ Ignore AvailabilityOverride when generating slots
 - ❌ Show slots past closing time minus service duration
-

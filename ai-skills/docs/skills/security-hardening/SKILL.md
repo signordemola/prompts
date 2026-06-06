@@ -35,7 +35,7 @@ const hash = createHash("sha256").update(password).digest("hex")
 import { z } from "zod"
 
 const BookingSchema = z.object({
-  name: z.string().check(z.minLength(1), z.maxLength(100), z.trim()),
+  name: z.string().trim().min(1).max(100),
   email: z.email(),
   phone: z.string().optional(),
 })

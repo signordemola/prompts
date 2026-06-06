@@ -4,33 +4,42 @@
 
 ```ts
 // Server: streamText returns a ReadableStream
-import { streamText } from "ai"
+import { convertToModelMessages, streamText } from "ai"
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
   
   const result = streamText({
     model: getModel("standard"),
-    messages,
+    messages: convertToModelMessages(messages),
     onFinish: async ({ text, usage }) => {
       await saveMessages(conversationId, text, usage)
     },
   })
   
-  // Returns SSE-formatted response
-  return result.toDataStreamResponse()
+  // Returns AI SDK UI message stream response
+  return result.toUIMessageStreamResponse()
 }
 ```
 
 ## Client: useChat handles everything (AI SDK v5)
 
 ```tsx
+import { useState } from "react"
 import { useChat } from "@ai-sdk/react"
 
-const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat()
+const { messages, sendMessage, status, stop, regenerate, error } = useChat()
+const [input, setInput] = useState("")
 
-// status = "ready" | "streaming" | "error"
-// messages auto-update as chunks arrive
+function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault()
+  if (!input.trim()) return
+  sendMessage({ text: input })
+  setInput("")
+}
+
+// status = "ready" | "submitted" | "streaming" | "error"
+// messages auto-update as UIMessage parts arrive
 // stop() cancels the stream mid-response
 ```
 
@@ -79,12 +88,12 @@ eventSource.onmessage = (event) => {
 
 ```ts
 // If stream breaks mid-response:
-const { messages, reload, error } = useChat()  // from @ai-sdk/react
+const { messages, regenerate, error } = useChat()  // from @ai-sdk/react
 
 {error && (
   <div className="error">
     <p>Something went wrong.</p>
-    <button onClick={reload}>Retry</button>
+    <button onClick={() => regenerate()}>Retry</button>
   </div>
 )}
 ```

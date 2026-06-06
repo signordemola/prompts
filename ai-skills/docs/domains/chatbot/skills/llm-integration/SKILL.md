@@ -40,7 +40,8 @@ export function getModel(tier: keyof typeof MODELS = "standard") {
 
 ```ts
 // app/api/chat/route.ts
-import { streamText } from "ai"
+import { convertToModelMessages, streamText } from "ai"
+import type { ModelMessage } from "ai"
 
 export async function POST(req: Request) {
   const { messages, conversationId } = await req.json()
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: getModel("standard"),
     system: SYSTEM_PROMPT,
-    messages,
+    messages: convertToModelMessages(messages),
     maxTokens: 1024,
     onFinish: async ({ text, usage }) => {
       // Persist messages AFTER stream completes
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
     },
   })
   
-  return result.toDataStreamResponse()
+  return result.toUIMessageStreamResponse()
 }
 ```
 
@@ -72,8 +73,8 @@ export async function POST(req: Request) {
 
 ```ts
 // Simple routing by conversation length or intent
-function selectModel(messages: Message[]): ModelTier {
-  const lastMessage = messages[messages.length - 1].content
+function selectModel(messages: ModelMessage[]): ModelTier {
+  const lastMessage = String(messages[messages.length - 1].content)
   if (messages.length <= 2) return "fast"           // first exchange
   if (lastMessage.length > 2000) return "longContext" // large input
   return "standard"                                    // default
@@ -127,12 +128,12 @@ import { streamText } from "ai"
 
 try {
   const result = streamText({ model, messages })
-  return result.toDataStreamResponse()
+  return result.toUIMessageStreamResponse()
 } catch (error) {
   if (error.status === 429) {
     // Rate limited — try fallback model
     const fallback = streamText({ model: getModel("fast"), messages })
-    return fallback.toDataStreamResponse()
+    return fallback.toUIMessageStreamResponse()
   }
   if (error.status === 500) {
     // Provider down — graceful message

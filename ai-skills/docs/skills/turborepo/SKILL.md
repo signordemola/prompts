@@ -105,17 +105,32 @@ packages:
 
 ## Shared Database Package
 
+For Prisma 7, generate the client into the package and instantiate with a driver adapter:
+
+```prisma
+// packages/database/prisma/schema.prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+```
+
 ```ts
 // packages/database/src/index.ts
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "./generated/prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+})
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 
-export * from "@prisma/client"
+export * from "./generated/prisma/client"
 export { prisma as db }
 ```
 
@@ -130,10 +145,12 @@ export { prisma as db }
     "db:push": "prisma db push"
   },
   "dependencies": {
-    "@prisma/client": "^6.x"
+    "@prisma/client": "^7.x",
+    "@prisma/adapter-pg": "^7.x",
+    "pg": "^8.x"
   },
   "devDependencies": {
-    "prisma": "^6.x"
+    "prisma": "^7.x"
   }
 }
 ```

@@ -29,6 +29,17 @@ Touch only what the task requires.
 Do not improve, rewrite, or refactor adjacent code unless necessary for the task.  
 Match existing style exactly.
 
+## Rule 3.1 - No Code Comments or Bloat
+
+Do not add comments to generated project source code. No explanatory comments,
+section comments, TODO comments, JSDoc comments, commented-out code, or inline
+notes. Prefer clear names and simpler code instead.
+
+Use `const` arrow functions by default in JavaScript/TypeScript. Use `let` only
+when reassignment is required. Do not use `function` declarations unless a
+framework, runtime, or existing file convention requires them. Do not add
+speculative abstractions, future-proofing, unused options, or wrapper layers.
+
 ## Rule 4 - Goal-Driven Execution
 
 Define clear success criteria before changing code.  
