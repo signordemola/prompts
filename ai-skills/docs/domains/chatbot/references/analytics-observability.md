@@ -73,10 +73,22 @@ const poorResponses = await prisma.feedback.findMany({
 })
 ```
 
-## LLM Observability (Langfuse)
+## LLM Observability (Langfuse v5)
+
+> **Langfuse v5:** Observation-centric data model built on OpenTelemetry. Uses `LangfuseSpanProcessor` instead of manual `trace()`/`span()` calls.
 
 ```ts
-// Optional: integrate Langfuse for tracing
+// Option 1: OpenTelemetry integration (recommended for v5)
+import { NodeSDK } from "@opentelemetry/sdk-node"
+import { LangfuseSpanProcessor } from "langfuse"
+
+const sdk = new NodeSDK({
+  spanProcessors: [new LangfuseSpanProcessor()],
+})
+sdk.start()
+// All AI SDK calls are now automatically traced
+
+// Option 2: Manual tracing (still works in v5)
 import { Langfuse } from "langfuse"
 
 const langfuse = new Langfuse({
@@ -84,9 +96,7 @@ const langfuse = new Langfuse({
   secretKey: process.env.LANGFUSE_SECRET_KEY,
 })
 
-// Trace a conversation turn
 const trace = langfuse.trace({ name: "chat-turn", userId, sessionId: conversationId })
 const span = trace.span({ name: "llm-call", input: messages })
-// ... after response:
 span.end({ output: response, usage: { input: promptTokens, output: completionTokens } })
 ```
