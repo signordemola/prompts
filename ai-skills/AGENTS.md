@@ -49,12 +49,16 @@ Do not do unnecessary online research for purely local code questions.
 
 If repo rules, docs, code patterns, or user instructions conflict, pick the safest/current one, explain the conflict, and flag what should be cleaned up.
 
-## Rule 8 - No Secret or Env Changes Without Permission
+## Rule 8 - Log Mistakes
+
+When you make a mistake that the skills library should have caught, or discover a pattern gap, append a structured entry to `docs/LESSONS.md` (create it if missing). Format: what happened, root cause, which skill should fix it. Read `docs/workflows/self-improvement/SKILL.md` for the full template. Also read `docs/LESSONS.md` at the start of each session if it exists.
+
+## Rule 9 - No Secret or Env Changes Without Permission
 
 Do not open, edit, print, copy, or summarize `.env` files unless explicitly asked in the current task.  
 Do not expose secrets in any form.
 
-## Rule 9 - Quality Gate (Run Only When Requested)
+## Rule 10 - Quality Gate (Run Only When Requested)
 
 The Quality Gate is **not** run automatically after every task.  
 Running typecheck/lint to verify your own changes during a task is fine — that's verification, not a quality gate.  
@@ -120,7 +124,7 @@ cannot be addressed by fixing the code. If you are unsure how to fix an issue,
 research the official docs for the tool and the relevant framework before proposing
 a fix. Ask before suppressing anything.
 
-## Rule 10 - Fail Loud
+## Rule 11 - Fail Loud
 
 "Completed" is wrong if anything was skipped silently.  
 "Tests pass" is wrong if checks were not run.  

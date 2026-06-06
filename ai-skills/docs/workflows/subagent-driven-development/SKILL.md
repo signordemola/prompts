@@ -11,9 +11,10 @@ Execute plans by dispatching a fresh subagent per task, with two-stage review af
 
 **Announce at start:** "I'm using the subagent-driven-development workflow to execute this plan."
 
-<EXTREMELY-IMPORTANT>
+<HARD-GATE>
+**⛔ MANDATORY — DO NOT STOP BETWEEN TASKS.**
 Continuous execution. Do not pause to check in with the user between tasks. Execute all tasks from the plan without stopping. The only reasons to stop are: BLOCKED status you cannot resolve, ambiguity that genuinely prevents progress, or all tasks complete. "Should I continue?" prompts waste their time — they asked you to execute the plan, so execute it.
-</EXTREMELY-IMPORTANT>
+</HARD-GATE>
 
 ## When to Use
 
@@ -52,9 +53,8 @@ If the implementer can't proceed: mark task as BLOCKED, move to next task.
 
 **2c. Dispatch Spec Reviewer Subagent**
 
-<EXTREMELY-IMPORTANT>
-CRITICAL: Do Not Trust the Implementer's Report.
-
+<HARD-GATE>
+**⛔ MANDATORY — DO NOT TRUST THE IMPLEMENTER'S REPORT.**
 The implementer finished suspiciously quickly. Their report may be incomplete, inaccurate, or optimistic. The spec reviewer MUST verify everything independently.
 
 DO NOT:
@@ -67,7 +67,7 @@ DO:
 - Compare against the task requirements line by line
 - Run the tests yourself
 - Check edge cases mentioned in the spec
-</EXTREMELY-IMPORTANT>
+</HARD-GATE>
 
 If spec review fails → implementer fixes gaps.
 

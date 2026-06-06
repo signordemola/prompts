@@ -16,6 +16,7 @@ REPO_SSH="git@github.com:signordemola/prompts.git"
 REPO_SUBDIR="ai-skills"
 BRANCH="main"
 TEMP_DIR=""
+LOCAL_SOURCE=""
 
 # Colors
 GREEN='\033[0;32m'
@@ -40,6 +41,7 @@ trap cleanup EXIT
 
 MODE="install"
 ONLY=""
+SOURCE_PATH=""
 
 if [ -f "docs/ROUTER.md" ]; then
   MODE="update"
@@ -52,11 +54,16 @@ while [[ $# -gt 0 ]]; do
       ONLY="$2"
       shift 2
       ;;
+    --source)
+      SOURCE_PATH="$2"
+      shift 2
+      ;;
     --help|-h)
       echo "AI-Skills Library Installer / Updater"
       echo ""
       echo "Usage:"
       echo "  bash install.sh              Full install or update"
+      echo "  bash install.sh --source /path/to/ai-skills   Install from local copy"
       echo "  bash install.sh --only X     Update only a subset:"
       echo "    --only workflows           All workflow skills"
       echo "    --only skills              All framework/library skills"
@@ -74,44 +81,61 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# ── Fetch latest from GitHub ─────────────────────────────────────────────────
+# ── Resolve source ───────────────────────────────────────────────────────────
 
-info "Fetching latest ai-skills from GitHub..."
-TEMP_DIR=$(mktemp -d)
-CLONE_SUCCESS=false
+# Auto-detect: if this script lives inside the source repo, use it directly
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)"
+if [ -z "$SOURCE_PATH" ] && [ -f "$SCRIPT_DIR/AGENTS.md" ] && [ -d "$SCRIPT_DIR/docs" ]; then
+  SOURCE_PATH="$SCRIPT_DIR"
+fi
 
-# Strategy 1: gh CLI (works with private repos if logged in)
-if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
-  info "Using GitHub CLI (authenticated)..."
-  if gh repo clone signordemola/prompts "$TEMP_DIR" -- --depth 1 --branch "$BRANCH" --single-branch --quiet 2>/dev/null; then
-    CLONE_SUCCESS=true
+if [ -n "$SOURCE_PATH" ]; then
+  # ── Local source ──────────────────────────────────────────────────────────
+  info "Using local source: $SOURCE_PATH"
+  SOURCE="$SOURCE_PATH"
+  
+  if [ ! -d "$SOURCE/docs" ]; then
+    err "Expected docs/ directory not found in $SOURCE. Is the path correct?"
   fi
-fi
+else
+  # ── Fetch from GitHub ───────────────────────────────────────────────────
+  info "Fetching latest ai-skills from GitHub..."
+  TEMP_DIR=$(mktemp -d)
+  CLONE_SUCCESS=false
 
-# Strategy 2: HTTPS with credential helper (works if git credentials stored)
-if [ "$CLONE_SUCCESS" = false ]; then
-  if git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_URL" "$TEMP_DIR" 2>/dev/null; then
-    CLONE_SUCCESS=true
+  # Strategy 1: gh CLI (works with private repos if logged in)
+  if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
+    info "Using GitHub CLI (authenticated)..."
+    if gh repo clone signordemola/prompts "$TEMP_DIR" -- --depth 1 --branch "$BRANCH" --single-branch --quiet 2>/dev/null; then
+      CLONE_SUCCESS=true
+    fi
   fi
-fi
 
-# Strategy 3: SSH (works if SSH key is set up)
-if [ "$CLONE_SUCCESS" = false ]; then
-  info "HTTPS failed, trying SSH..."
-  if git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_SSH" "$TEMP_DIR" 2>/dev/null; then
-    CLONE_SUCCESS=true
+  # Strategy 2: HTTPS with credential helper (works if git credentials stored)
+  if [ "$CLONE_SUCCESS" = false ]; then
+    if git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_URL" "$TEMP_DIR" 2>/dev/null; then
+      CLONE_SUCCESS=true
+    fi
   fi
-fi
 
-if [ "$CLONE_SUCCESS" = false ]; then
-  echo ""
-  err "Could not clone repo. For private repos, run: gh auth login"
-fi
+  # Strategy 3: SSH (works if SSH key is set up)
+  if [ "$CLONE_SUCCESS" = false ]; then
+    info "HTTPS failed, trying SSH..."
+    if git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_SSH" "$TEMP_DIR" 2>/dev/null; then
+      CLONE_SUCCESS=true
+    fi
+  fi
 
-SOURCE="$TEMP_DIR/$REPO_SUBDIR"
+  if [ "$CLONE_SUCCESS" = false ]; then
+    echo ""
+    err "Could not clone repo. Try: bash install.sh --source /path/to/ai-skills"
+  fi
 
-if [ ! -d "$SOURCE/docs" ]; then
-  err "Expected docs/ directory not found in $SOURCE. Is the repo structure correct?"
+  SOURCE="$TEMP_DIR/$REPO_SUBDIR"
+
+  if [ ! -d "$SOURCE/docs" ]; then
+    err "Expected docs/ directory not found in $SOURCE. Is the repo structure correct?"
+  fi
 fi
 
 # ── Count what's there before ────────────────────────────────────────────────
