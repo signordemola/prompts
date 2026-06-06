@@ -4,7 +4,14 @@ Any AI coding agent working in this repository must follow these rules strictly.
 
 ## Rule 0 - Load Workflow Skills First
 
-**Before doing ANY work, read `docs/ROUTER.md`.** It contains the workflow skill index. If a skill applies to your task (even a 1% chance), you MUST read and follow the full `SKILL.md` before starting. This is not optional. Skills override your default behavior. User instructions in this file override skills.
+<HARD-GATE>
+**⛔ MANDATORY — DO NOT CREATE OR EDIT SOURCE FILES UNTIL YOU HAVE:**
+1. Read `docs/ROUTER.md`
+2. Stated which workflow skill applies to this task
+3. Completed its first checkpoint
+
+If the task feels too simple for a workflow, say so out loud and let the user decide. Do not skip silently.
+</HARD-GATE>
 
 ## Rule 1 - Think Before Coding
 
