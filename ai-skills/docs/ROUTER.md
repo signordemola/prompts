@@ -45,6 +45,7 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | **receiving-review** | `workflows/receiving-review/SKILL.md` | Got review feedback, before implementing |
 | **dispatching-parallel-agents** | `workflows/dispatching-parallel-agents/SKILL.md` | 2+ independent problems to solve concurrently |
 | **self-improvement** | `workflows/self-improvement/SKILL.md` | Agent made a mistake, hit a gap, or discovered a new pattern |
+| **recovery** | `workflows/recovery/SKILL.md` | Something went wrong — diagnose failure mode before fixing |
 
 ### Domain Skills (WHAT you're building)
 
@@ -59,6 +60,7 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | Command | Skill | Use When |
 |---------|-------|----------|
 | `/next` | `skills/nextjs-app-router/SKILL.md` | Next.js App Router projects |
+| `/style` | `skills/code-style/SKILL.md` | Writing or editing project source code |
 | `/nest` | `skills/nestjs/SKILL.md` | NestJS modular backend |
 | `/fastapi` | `skills/fastapi/SKILL.md` | FastAPI Python backend |
 | `/turbo` | `skills/turborepo/SKILL.md` | Turborepo monorepo setup |
@@ -66,6 +68,7 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | `/invoice` | `skills/invoicing/SKILL.md` | Invoice generation, PDF, deposits, tax |
 | `/subdomain` | `skills/subdomain-architecture/SKILL.md` | Subdomain booking systems, multi-tenant, white-label |
 | `/files` | `skills/client-file-delivery/SKILL.md` | Secure file delivery, signed URLs, R2/S3, galleries |
+| `/ui-check` | `skills/ui-consistency/SKILL.md` | After building UI — capture patterns to ui-registry.md |
 
 ## The Workflow Pipeline
 
