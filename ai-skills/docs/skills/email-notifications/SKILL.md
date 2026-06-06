@@ -47,7 +47,47 @@ import { Resend } from "resend"
 const resend = new Resend(process.env.RESEND_API_KEY!)
 ```
 
-### Step 4: Vercel deployment — CRITICAL
+### Step 4: Email templates (React Email 6)
+
+Import components from the unified `react-email` package:
+
+```tsx
+import { Html, Head, Body, Container, Text, Button, render } from "react-email"
+
+const BookingConfirmation = ({ name, service, date }: Props) => {
+  return (
+    <Html>
+      <Head />
+      <Body style={{ fontFamily: "Inter, sans-serif" }}>
+        <Container>
+          <Text>Hi {name},</Text>
+          <Text>Your {service} on {date} is confirmed.</Text>
+          <Button href={manageUrl}>Manage Booking</Button>
+        </Container>
+      </Body>
+    </Html>
+  )
+}
+
+export default BookingConfirmation
+```
+
+Send with Resend:
+
+```ts
+import BookingConfirmation from "@/emails/booking-confirmation"
+import { render } from "react-email"
+
+await resend.emails.send({
+  from: process.env.EMAIL_FROM!,
+  to: client.email,
+  subject: `Booking confirmed — ${service.name}`,
+  html: await render(<BookingConfirmation name={client.name} service={service.name} date={formattedDate} />),
+  attachments: [{ filename: "booking.ics", content: icsContent }],
+})
+```
+
+### Step 5: Vercel deployment — CRITICAL
 `RESEND_API_KEY` must be in **BOTH** Runtime AND Build environment variables.
 Module-level instantiation runs at build time — missing key = build crash.
 
@@ -57,3 +97,10 @@ RESEND_API_KEY=re_...
 EMAIL_FROM=Studio Name <noreply@yourdomain.com>
 NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
 ```
+
+## NEVER
+- ❌ Import from `@react-email/components` (deprecated — use `react-email`)
+- ❌ Send emails without ICS attachments for appointments
+- ❌ Hardcode email addresses in templates
+- ❌ Skip the Vercel build env var step (causes build crashes)
+

@@ -112,7 +112,7 @@ export const ProductsList = () => {
     queryFn: getProducts,
   })
 
-  if (query.isLoading) {
+  if (query.isPending) {
     return <ProductsSkeleton />
   }
 
@@ -128,6 +128,38 @@ export const ProductsList = () => {
     </div>
   )
 }
+```
+
+## queryOptions (Type-Safe Shared Config)
+
+Define `queryKey` and `queryFn` once, share everywhere:
+
+```ts
+import { queryOptions } from "@tanstack/react-query"
+
+export const productsOptions = () =>
+  queryOptions({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  })
+
+export const productOptions = (id: string) =>
+  queryOptions({
+    queryKey: ["products", id],
+    queryFn: () => getProductById(id),
+  })
+```
+
+Use in components:
+
+```tsx
+const query = useQuery(productsOptions())
+```
+
+Use in prefetch:
+
+```ts
+await queryClient.prefetchQuery(productsOptions())
 ```
 
 ## Mutation Pattern
@@ -193,6 +225,30 @@ export const CreateProductForm = () => {
     </form>
   )
 }
+```
+
+## Optimistic Updates
+
+```tsx
+const mutation = useMutation({
+  mutationFn: deleteProduct,
+  onMutate: async (productId) => {
+    await queryClient.cancelQueries({ queryKey: ["products"] })
+    const previous = queryClient.getQueryData(["products"])
+
+    queryClient.setQueryData(["products"], (old: Product[]) =>
+      old.filter((p) => p.id !== productId)
+    )
+
+    return { previous }
+  },
+  onError: (_err, _id, context) => {
+    queryClient.setQueryData(["products"], context?.previous)
+  },
+  onSettled: async () => {
+    await queryClient.invalidateQueries({ queryKey: ["products"] })
+  },
+})
 ```
 
 ## Suspense Pattern

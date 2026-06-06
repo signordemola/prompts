@@ -69,6 +69,12 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | `/subdomain` | `skills/subdomain-architecture/SKILL.md` | Subdomain booking systems, multi-tenant, white-label |
 | `/files` | `skills/client-file-delivery/SKILL.md` | Secure file delivery, signed URLs, R2/S3, galleries |
 | `/ui-check` | `skills/ui-consistency/SKILL.md` | After building UI — capture patterns to ui-registry.md |
+| `/tailwind` | `skills/tailwind-css/SKILL.md` | Tailwind CSS v4 — @theme, CSS-first config |
+| `/shadcn` | `skills/shadcn-ui/SKILL.md` | shadcn/ui components, presets, theming |
+| `/form` | `skills/react-hook-form/SKILL.md` | Forms with React Hook Form + Zod |
+| `/upload` | `skills/uploadthing/SKILL.md` | File uploads with Uploadthing v7 |
+| `/e2e` | `skills/playwright/SKILL.md` | E2E testing with Playwright |
+| `/hono` | `skills/hono/SKILL.md` | Hono API framework — edge, multi-runtime |
 
 ## The Workflow Pipeline
 

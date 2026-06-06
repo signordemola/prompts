@@ -3,7 +3,7 @@ name: fastapi
 description: >
   FastAPI production patterns. ACTIVATE when: building a FastAPI backend,
   creating routers/services/repositories, setting up SQLAlchemy async,
-  Pydantic v2 schemas, Alembic migrations, background tasks, or testing.
+  Pydantic v3 schemas, Alembic migrations, background tasks, or testing.
 ---
 
 # FastAPI Framework Skill
@@ -11,7 +11,8 @@ description: >
 ## When to Use
 - Building or modifying a FastAPI backend
 - Database work with SQLAlchemy 2.0 async
-- Pydantic v2 schemas, validation, settings
+- Pydantic v3 schemas, validation, settings
+- Application lifespan (startup/shutdown resources)
 - Background tasks (ARQ/Celery)
 - Testing FastAPI endpoints
 
@@ -70,10 +71,9 @@ async def get_db():
         yield session
 ```
 
-## Pydantic v2 Schemas
+## Pydantic v3 Schemas
 
 ```python
-# app/users/schemas.py
 from pydantic import BaseModel, EmailStr, field_validator, computed_field
 from datetime import datetime
 
@@ -101,6 +101,40 @@ class UserResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 ```
+
+## Lifespan (Startup/Shutdown)
+
+Use `lifespan` to initialise and clean up shared resources:
+
+```python
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    pool = await create_pool()
+    app.state.pool = pool
+    yield
+    await pool.close()
+
+app = FastAPI(lifespan=lifespan)
+```
+
+## Background Tasks
+
+Built-in `BackgroundTasks` is fire-and-forget only (email, logging):
+
+```python
+from fastapi import BackgroundTasks
+
+@router.post("/bookings")
+async def create_booking(data: BookingCreate, bg: BackgroundTasks):
+    booking = await service.create(data)
+    bg.add_task(send_confirmation_email, booking)
+    return booking
+```
+
+For heavy or reliable work (retries, persistence), use Celery or ARQ.
 
 ## Repository Pattern
 
