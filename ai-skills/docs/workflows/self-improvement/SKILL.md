@@ -54,7 +54,28 @@ Read these files:
 - Your own session history (what you built, what struggled)
 - Which skills from `.ai-skills/docs/` you actually used
 
-### Step 2: Generate REFLECTION.md
+### Step 2: Research Gaps Online
+
+For each gap or mistake in LESSONS.md:
+
+1. **Search** for current best practices on that topic (official docs first, then GitHub, then reputable sources)
+2. **Compare** what the skill currently says vs what the latest docs recommend
+3. **Note** if any code examples are outdated (new API versions, deprecated methods)
+4. **Check** if other agent skill libraries (antigravity.codes, superpowers) have patterns we're missing
+
+Record findings per gap:
+
+```markdown
+### Research: [gap topic]
+**Searched:** [what you searched for]
+**Found:** [key finding — new API, better pattern, missing edge case]
+**Source:** [URL or doc reference]
+**Stale in our library?** Yes/No — [what's outdated]
+```
+
+> Only research gaps marked CRITICAL or IMPORTANT. Skip MINOR gaps.
+
+### Step 3: Generate REFLECTION.md
 
 Write `.ai-skills/REFLECTION.md`:
 
@@ -76,11 +97,15 @@ Write `.ai-skills/REFLECTION.md`:
 - [Pattern worth adding to the library]
 - [Include code examples if relevant]
 
+## Research Findings
+- [What online research revealed — new APIs, better patterns, stale examples]
+- [Include source URLs]
+
 ## Recommendations
 - [Specific skills to update, with priority]
 ```
 
-### Step 3: Generate PROPOSED-CHANGES.md
+### Step 4: Generate PROPOSED-CHANGES.md
 
 Write `.ai-skills/PROPOSED-CHANGES.md` with **specific, actionable diffs**:
 
@@ -110,7 +135,7 @@ Write `.ai-skills/PROPOSED-CHANGES.md` with **specific, actionable diffs**:
 Every proposed change must include the exact file, the exact section, and the exact replacement text. "Update the stripe skill" is not acceptable. "Add Luxon section after line 45 of timezone-safety/SKILL.md with this code: ..." is acceptable.
 </HARD-GATE>
 
-### Step 4: Report to User
+### Step 5: Report to User
 
 After generating both files, tell the user:
 
