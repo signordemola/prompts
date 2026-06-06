@@ -96,3 +96,27 @@ done
 2. Compare against the "Documented Version" column
 3. If a major version changed, research breaking changes
 4. Update the affected skill file and this registry
+
+## Ecosystem Discovery (Weekly)
+
+Check if major frameworks have introduced new recommended packages:
+
+| Framework | What to Check |
+|-----------|---------------|
+| Next.js | New `@next/*` packages, recommended middleware, new App Router APIs |
+| Prisma | New adapters (`@prisma/adapter-*`), new CLI commands |
+| AI SDK | New `@ai-sdk/*` provider packages, new model integrations |
+| shadcn/ui | New components added to registry, new blocks |
+| TanStack | New `@tanstack/*` packages (Start, Store) |
+| Tailwind | New official plugins, new `@tailwindcss/*` packages |
+| Hono | New `@hono/*` middleware packages |
+| NestJS | New `@nestjs/*` modules, v12 stable release |
+| Playwright | New testing APIs, browser support changes |
+| Uploadthing | New SDK features, new framework adapters |
+
+Search query template:
+```
+"[framework] new packages released [current month] [current year]"
+"[framework] changelog [current month] [current year]"
+```
+

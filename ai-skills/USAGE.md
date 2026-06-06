@@ -35,8 +35,8 @@ your-project/
 └── .ai-skills/             ← The library (gitignored)
     ├── docs/
     │   ├── ROUTER.md       ← Central index
-    │   ├── workflows/ (12) ← HOW to work
-    │   ├── skills/ (21)    ← WHAT tools to use
+    │   ├── workflows/ (13) ← HOW to work
+    │   ├── skills/ (28)    ← WHAT tools to use
     │   ├── domains/ (3)    ← WHAT to build
     │   └── references/     ← Deep reference docs
     ├── update.sh           ← Update from GitHub
@@ -152,7 +152,7 @@ The model edits the skills, you review and push. All future projects get the fix
 
 ## Directory Reference
 
-### Workflows (12)
+### Workflows (13)
 
 | Skill | Trigger |
 |-------|---------|
@@ -168,29 +168,41 @@ The model edits the skills, you review and push. All future projects get the fix
 | `receiving-review/` | Got review feedback |
 | `dispatching-parallel-agents/` | 2+ independent problems to solve |
 | `self-improvement/` | Agent made a mistake, or user says "reflect" |
+| `recovery/` | Something went wrong — diagnose before fixing |
 
-### Skills (21)
+### Skills (28)
 
 | Skill | What |
 |-------|------|
 | `code-style/` | No comments, const arrow functions, anti-bloat |
-| `nextjs-app-router/` | Next.js App Router |
-| `nestjs/` | NestJS modular backend |
-| `fastapi/` | FastAPI Python backend |
+| `nextjs-app-router/` | Next.js 16 App Router |
+| `nestjs/` | NestJS v11 modular backend |
+| `fastapi/` | FastAPI + Pydantic v3 backend |
 | `turborepo/` | Turborepo monorepo |
-| `prisma-database/` | Prisma ORM |
-| `drizzle-database/` | Drizzle ORM |
+| `prisma-database/` | Prisma 7 ORM |
+| `drizzle-database/` | Drizzle v1 ORM |
 | `stripe-payments/` | Stripe checkout, webhooks, refunds |
 | `error-handling/` | Error handling across frameworks |
-| `input-validation/` | Validation (Zod, class-validator, Pydantic) |
-| `data-fetching/` | Data fetching patterns |
-| `state-management/` | Client state management |
-| `email-notifications/` | Transactional email |
+| `input-validation/` | Validation (Zod v4, Pydantic v3) |
+| `data-fetching/` | TanStack Query v5 + Server Actions |
+| `state-management/` | Client state (Zustand v5) |
+| `email-notifications/` | React Email 6 + Resend |
 | `security-hardening/` | Security best practices |
 | `seo-performance/` | SEO and performance |
 | `mobile-ux/` | Mobile UX patterns |
-| `timezone-safety/` | Timezone handling |
+| `timezone-safety/` | Timezone handling (@date-fns/tz) |
 | `deployment-vercel/` | Vercel deployment |
+| `invoicing/` | Invoice generation, PDF, tax |
+| `subdomain-architecture/` | Multi-tenant subdomains |
+| `client-file-delivery/` | Secure file delivery, signed URLs |
+| `ui-consistency/` | Visual pattern tracking (ui-registry.md) |
+| `tailwind-css/` | Tailwind CSS v4 — @theme, CSS-first |
+| `shadcn-ui/` | shadcn/ui — Base UI, presets, Form pattern |
+| `react-hook-form/` | React Hook Form v7 + Zod |
+| `uploadthing/` | Uploadthing v7 file uploads |
+| `playwright/` | E2E testing (Playwright v1.60) |
+| `hono/` | Hono v4 API framework |
+| `project-scripts/` | predev, prebuild, Husky, lint, CI |
 
 ### Domains (3)
 
