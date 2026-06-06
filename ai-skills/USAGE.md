@@ -2,116 +2,163 @@
 
 ## What This Is
 
-A portable knowledge base you copy into client projects so AI coding agents (Antigravity, Claude Code, OpenCode, CommandCode, Codex) immediately follow your engineering workflows, know your domain patterns, and use the right framework conventions.
+A portable knowledge base you install into any project so AI coding agents follow your engineering workflows, domain patterns, and framework conventions. **Nothing is tracked in your project's git** — the library lives in `.ai-skills/` (gitignored).
 
 ## Quick Start
 
-### Option A: Install script (recommended)
+### Install into a project
 
+**From your terminal (has GitHub credentials):**
 ```bash
-# From your project root
 curl -sSL https://raw.githubusercontent.com/signordemola/prompts/main/ai-skills/install.sh | bash
 ```
 
-This will:
-- Copy `docs/`, `AGENTS.md`, `USAGE.md` into your project
-- Create symlinks (`CLAUDE.md → AGENTS.md`, `.cursorrules → AGENTS.md`)
-- Save an update script to `scripts/ai-skills-update.sh`
-
-### Option B: npx skills (if using skills CLI)
-
+**From an AI agent terminal (no credentials):**
 ```bash
-npx skills add https://github.com/signordemola/prompts/tree/main/ai-skills
+bash /path/to/ai-skills/install.sh
+```
+Auto-detects the local repo and copies from it.
+
+**With explicit source path:**
+```bash
+bash /path/to/ai-skills/install.sh --source /path/to/ai-skills
 ```
 
-### Option C: Manual copy
+### What gets installed
 
-```bash
-git clone https://github.com/signordemola/prompts.git /tmp/prompts
-cp -r /tmp/prompts/ai-skills/docs ./docs
-cp /tmp/prompts/ai-skills/AGENTS.md ./AGENTS.md
-ln -s AGENTS.md CLAUDE.md
-rm -rf /tmp/prompts
-```
-
-### Result
-
-Your project should now have:
 ```
 your-project/
-├── AGENTS.md          ← All agents read this (rules + "read ROUTER.md")
-├── CLAUDE.md          ← Symlink → AGENTS.md (for Claude Code)
-├── docs/
-│   ├── ROUTER.md      ← Central index — agents read this first
-│   ├── workflows/     ← HOW to work (11 workflow skills)
-│   ├── skills/        ← WHAT tools to use (17 framework/library skills)
-│   ├── domains/       ← WHAT to build (3 domain knowledge bases)
-│   └── references/    ← Deep reference docs
-├── scripts/
-│   └── ai-skills-update.sh  ← Run this to update later
-└── ... your code
+├── .gitignore              ← Updated (adds .ai-skills/, AGENTS.md, etc.)
+├── AGENTS.md               ← 11 rules, all agents read this (gitignored)
+├── CLAUDE.md → AGENTS.md   ← Symlink for Claude Code (gitignored)
+├── .cursorrules → AGENTS.md ← Symlink for Cursor (gitignored)
+└── .ai-skills/             ← The library (gitignored)
+    ├── docs/
+    │   ├── ROUTER.md       ← Central index
+    │   ├── workflows/ (12) ← HOW to work
+    │   ├── skills/ (17)    ← WHAT tools to use
+    │   ├── domains/ (3)    ← WHAT to build
+    │   └── references/     ← Deep reference docs
+    ├── update.sh           ← Update from GitHub
+    └── push-lessons.sh     ← Push lessons to GitHub
 ```
 
-When any AI agent opens the project, the chain is:
-```
-Agent reads AGENTS.md
-  → Rule 0: "Read docs/ROUTER.md"
-    → ROUTER.md: "Match task to workflow skill, load it"
-      → Skill enforces behavior
-```
+**Nothing is tracked in git.** Only `.gitignore` is committed.
 
 ---
 
 ## How It Works
 
+### The Chain
+
+```
+Agent opens project
+  → Reads AGENTS.md (11 rules)
+  → Rule 0: "Read .ai-skills/docs/ROUTER.md"
+  → ROUTER.md matches task → loads the right workflow
+  → Workflow enforces behavior via HARD-GATEs
+  → Workflow loads relevant skills (Prisma, Next.js, etc.)
+  → If agent makes a mistake → Rule 8 logs to .ai-skills/LESSONS.md
+```
+
 ### The Three Layers
 
 | Layer | Path | Purpose | When Loaded |
 |-------|------|---------|-------------|
-| **Workflows** | `docs/workflows/` | Engineering process (brainstorm → plan → build → verify → ship) | When task matches trigger |
-| **Skills** | `docs/skills/` | Framework & library patterns (Next.js, NestJS, Prisma, Stripe, etc.) | When project uses that tech |
-| **Domains** | `docs/domains/` | Business logic (booking, ecommerce, chatbot) | When project is in that vertical |
-
-### The Workflow Pipeline
-
-Every non-trivial task follows this pipeline:
-
-```
-brainstorming → plan → executing-plans (or SDD) → verification → finishing-branch
-```
-
-- **brainstorming** — design before code
-- **plan** — decompose into tasks
-- **executing-plans** — implement task by task (single agent)
-- **subagent-driven-development** — implement with subagents (multi-agent)
-- **tdd** — red-green-refactor per task
-- **verification** — prove it works with evidence
-- **finishing-branch** — merge/PR/cleanup
-
-Supporting workflows: `debug`, `requesting-review`, `receiving-review`, `dispatching-parallel-agents`
+| **Workflows** | `.ai-skills/docs/workflows/` | Engineering process (brainstorm → plan → build → verify → ship) | When task matches trigger |
+| **Skills** | `.ai-skills/docs/skills/` | Framework & library patterns (Next.js, NestJS, Prisma, Stripe, etc.) | When project uses that tech |
+| **Domains** | `.ai-skills/docs/domains/` | Business logic (booking, ecommerce, chatbot) | When project is in that vertical |
 
 ### Context Loading (Tiered)
 
-Agents don't read everything — they use tiered loading to avoid context overload:
+Agents don't read everything. They use tiered loading:
 
 | Tier | When | Example |
 |------|------|---------|
-| **Always** | Loaded by Rule 0 | ROUTER.md |
-| **Match task** | Task matches a workflow trigger | "Fix this bug" → debug workflow |
-| **Match project** | Project uses this stack/domain | Next.js project → nextjs-app-router skill |
-| **On reference** | Skill says "read this reference" | debug → references/root-cause-tracing.md |
+| **Always** | Rule 0 | ROUTER.md |
+| **Match task** | Task matches a workflow | "Fix this bug" → debug |
+| **Match project** | Project uses this stack | Next.js → nextjs-app-router |
+| **On reference** | Skill says "read this" | debug → root-cause-tracing.md |
+
+---
+
+## Updating
+
+### Full update (from GitHub)
+
+```bash
+bash .ai-skills/update.sh
+```
+
+### Partial updates
+
+```bash
+bash .ai-skills/update.sh --only workflows
+bash .ai-skills/update.sh --only skills
+bash .ai-skills/update.sh --only domains
+bash .ai-skills/update.sh --only domains/booking
+bash .ai-skills/update.sh --only skills/stripe-payments
+bash .ai-skills/update.sh --only references
+bash .ai-skills/update.sh --only router
+```
+
+### After cloning a project
+
+Every developer must install once after cloning:
+```bash
+curl -sSL https://raw.githubusercontent.com/signordemola/prompts/main/ai-skills/install.sh | bash
+```
+
+---
+
+## The Learning Loop
+
+### During work (automatic)
+
+When the agent makes a mistake or discovers a gap, Rule 8 fires and it logs to `.ai-skills/LESSONS.md`:
+
+```markdown
+## 2026-06-06 — PATTERN-GAP
+**What happened:** Used wrong timezone function
+**Root cause:** timezone-safety skill doesn't cover Luxon
+**Which skill:** timezone-safety
+**Severity:** CRITICAL
+```
+
+### End of project (you say "reflect")
+
+The agent generates two files:
+- `.ai-skills/REFLECTION.md` — what worked, what didn't, new patterns
+- `.ai-skills/PROPOSED-CHANGES.md` — specific diffs for each skill to update
+
+### Push lessons to GitHub
+
+```bash
+bash .ai-skills/push-lessons.sh
+```
+
+This creates a GitHub issue in the master repo with your reflection. You review on GitHub.
+
+### Apply approved changes
+
+Open the master repo with a good model (Opus 4.6) and say:
+```
+Apply approved lessons from issue #N
+```
+
+The model edits the skills, you review and push. All future projects get the fix.
 
 ---
 
 ## Directory Reference
 
-### Workflows (11)
+### Workflows (12)
 
 | Skill | Trigger |
 |-------|---------|
-| `brainstorming/` | Starting any new feature or creative work |
-| `plan/` | Decomposing spec into implementation tasks |
-| `executing-plans/` | Executing a plan task-by-task (no subagents) |
+| `brainstorming/` | Starting any creative work |
+| `plan/` | Decomposing spec into tasks |
+| `executing-plans/` | Executing task-by-task (no subagents) |
 | `subagent-driven-development/` | Executing with subagents |
 | `tdd/` | Implementing any feature or bugfix |
 | `debug/` | Any bug, test failure, or unexpected behavior |
@@ -120,25 +167,26 @@ Agents don't read everything — they use tiered loading to avoid context overlo
 | `requesting-review/` | Need code review |
 | `receiving-review/` | Got review feedback |
 | `dispatching-parallel-agents/` | 2+ independent problems to solve |
+| `self-improvement/` | Agent made a mistake, or user says "reflect" |
 
 ### Skills (17)
 
 | Skill | What |
 |-------|------|
-| `nextjs-app-router/` | Next.js App Router patterns |
+| `nextjs-app-router/` | Next.js App Router |
 | `nestjs/` | NestJS modular backend |
 | `fastapi/` | FastAPI Python backend |
-| `turborepo/` | Turborepo monorepo setup |
-| `prisma-database/` | Prisma ORM patterns |
-| `drizzle-database/` | Drizzle ORM patterns |
+| `turborepo/` | Turborepo monorepo |
+| `prisma-database/` | Prisma ORM |
+| `drizzle-database/` | Drizzle ORM |
 | `stripe-payments/` | Stripe checkout, webhooks, refunds |
 | `error-handling/` | Error handling across frameworks |
-| `input-validation/` | Validation patterns (Zod, class-validator, Pydantic) |
+| `input-validation/` | Validation (Zod, class-validator, Pydantic) |
 | `data-fetching/` | Data fetching patterns |
 | `state-management/` | Client state management |
 | `email-notifications/` | Transactional email |
 | `security-hardening/` | Security best practices |
-| `seo-performance/` | SEO and performance optimization |
+| `seo-performance/` | SEO and performance |
 | `mobile-ux/` | Mobile UX patterns |
 | `timezone-safety/` | Timezone handling |
 | `deployment-vercel/` | Vercel deployment |
@@ -147,146 +195,42 @@ Agents don't read everything — they use tiered loading to avoid context overlo
 
 | Domain | Sub-skills | What |
 |--------|-----------|------|
-| `booking/` | 6 sub-skills + references | Appointment/service booking (beauty, wellness, events) |
-| `ecommerce/` | 6 sub-skills + references | Online store (products, cart, checkout, orders) |
-| `chatbot/` | 6 sub-skills + references | AI chatbot (LLM, RAG, tool calling, conversation) |
-
-### References (5)
-
-| Reference | What |
-|-----------|------|
-| `root-cause-tracing.md` | Backward tracing for debugging |
-| `testing-anti-patterns.md` | Mock traps and test quality |
-| `defense-in-depth.md` | Multi-layer validation patterns |
-| `migration-patterns.md` | Database migration workflows |
-| `api-design.md` | REST conventions across frameworks |
+| `booking/` | 6 + refs | Appointment/service booking |
+| `ecommerce/` | 6 + refs | Online store |
+| `chatbot/` | 6 + refs | AI chatbot (LLM, RAG, tools) |
 
 ---
 
-## How to Update
+## Adding New Content
 
-### Update everything (from GitHub)
+### New workflow skill
+1. Create `.ai-skills/docs/workflows/my-skill/SKILL.md`
+2. Add YAML frontmatter with `name` and `description`
+3. Add `<HARD-GATE>` with dual enforcement (XML + bold ⛔)
+4. Add to `docs/ROUTER.md` workflow table
+5. Keep under 500 lines
 
-```bash
-bash scripts/ai-skills-update.sh
-```
+### New framework skill
+1. Create `.ai-skills/docs/skills/my-skill/SKILL.md`
+2. Add YAML frontmatter with negative triggers
+3. Add to `docs/ROUTER.md` skills table
+4. Keep under 500 lines
 
-This fetches the latest from GitHub, replaces `docs/`, updates `AGENTS.md`, and backs up any local customizations.
-
-### Partial updates
-
-Update only what you need:
-
-```bash
-# All workflow skills
-bash scripts/ai-skills-update.sh --only workflows
-
-# All framework/library skills
-bash scripts/ai-skills-update.sh --only skills
-
-# All domain knowledge
-bash scripts/ai-skills-update.sh --only domains
-
-# Single domain
-bash scripts/ai-skills-update.sh --only domains/booking
-
-# Single skill
-bash scripts/ai-skills-update.sh --only skills/stripe-payments
-
-# Just the references
-bash scripts/ai-skills-update.sh --only references
-
-# Just ROUTER.md
-bash scripts/ai-skills-update.sh --only router
-
-# Just AGENTS.md + symlinks
-bash scripts/ai-skills-update.sh --only agents
-```
-
-### Re-install the update script itself
-
-If you lose `scripts/ai-skills-update.sh`:
-
-```bash
-curl -sSL https://raw.githubusercontent.com/signordemola/prompts/main/ai-skills/install.sh \
-  -o scripts/ai-skills-update.sh && chmod +x scripts/ai-skills-update.sh
-```
-
----
-
-## How to Add New Content
-
-### Add a new workflow skill
-
-1. Create `docs/workflows/my-skill/SKILL.md`
-2. Add YAML frontmatter with `name` and `description` (include trigger conditions)
-3. Add Iron Law + `<HARD-GATE>` with dual enforcement (XML + bold ⛔ text)
-4. Add `announce at start` pattern
-5. Add the skill to `docs/ROUTER.md` workflow table
-6. Keep under 500 lines
-
-### Add a new framework/library skill
-
-1. Create `docs/skills/my-skill/SKILL.md`
-2. Add YAML frontmatter — include negative triggers (when NOT to use)
-3. Add to `docs/ROUTER.md` invocable skills table
-4. Keep under 500 lines — move deep docs to `references/`
-
-### Add a new domain
-
-1. Create `docs/domains/my-domain/SKILL.md` (orchestrator)
-2. Create sub-skills in `docs/domains/my-domain/skills/`
-3. Create references in `docs/domains/my-domain/references/`
-4. Add prerequisites (database + framework skill loading)
-5. Add to `docs/ROUTER.md` domain commands table
-
-### Add a new reference
-
-1. Create `docs/references/my-reference.md`
-2. No YAML frontmatter needed (references aren't skills)
-3. Add to `docs/ROUTER.md` companion references list
-4. Link from relevant skills
-
----
-
-## How to Fix Mistakes
-
-When an agent does something wrong despite the library:
-
-1. **Identify which skill should have caught it** — was there a relevant workflow/domain skill?
-2. **If the skill exists but wasn't followed** — check the `description` field in YAML frontmatter. The trigger conditions might not match the task. Refine them.
-3. **If the skill exists but is wrong** — update the specific pattern, code example, or rule. Add a `NEVER` entry if the mistake is common.
-4. **If no skill covers it** — create a new skill or add a `NEVER` section to the closest existing skill.
-5. **If the agent never read ROUTER.md** — check that `AGENTS.md` is at the project root and the agent tool recognizes it.
-
-**Golden rule:** Every mistake the agent makes should result in a library update. Don't just fix the code — fix the instruction that would have prevented it.
+### New domain
+1. Create `.ai-skills/docs/domains/my-domain/SKILL.md` (orchestrator)
+2. Create sub-skills in `skills/` subdirectory
+3. Add to `docs/ROUTER.md` domain commands table
 
 ---
 
 ## Compatibility
 
-| Tool | Reads From | Status |
-|------|-----------|--------|
-| **Antigravity** | `AGENTS.md` | ✅ Native |
-| **Claude Code** | `CLAUDE.md` → symlink → `AGENTS.md` | ✅ Via symlink |
-| **OpenCode** | `AGENTS.md` | ✅ Native |
-| **CommandCode** | `AGENTS.md` | ✅ Native |
-| **Codex (OpenAI)** | `AGENTS.md` | ✅ Native |
-| **Cursor** | `.cursorrules` | ⚠️ Create symlink: `ln -s AGENTS.md .cursorrules` |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | ⚠️ Create symlink |
-| **Aider** | `read: AGENTS.md` in `.aider.conf.yml` | ⚠️ Needs config |
+| Agent | How | Status |
+|-------|-----|--------|
+| **Antigravity** | Reads `AGENTS.md` at root | ✅ |
+| **Claude Code** | Reads `CLAUDE.md` → symlink → `AGENTS.md` | ✅ |
+| **OpenCode** | Reads `AGENTS.md` | ✅ |
+| **Codex** | Reads `AGENTS.md` | ✅ |
+| **Cursor** | Reads `.cursorrules` → symlink → `AGENTS.md` | ✅ |
 
-### Cross-Model Enforcement
-
-The library uses dual enforcement to work across different AI models:
-
-```markdown
-<HARD-GATE>
-**⛔ MANDATORY GATE — THE NATURAL LANGUAGE VERSION.**
-The detailed instruction that all models can understand.
-</HARD-GATE>
-```
-
-- **Claude-family models** respond to `<HARD-GATE>` XML tags as strong directives
-- **Other models** (GPT, Gemini) respond to the bold ⛔ natural language inside
-- Both get the message regardless of which signal they're tuned to
+All HARD-GATEs use dual enforcement (`<HARD-GATE>` XML + bold ⛔ text) for cross-model compatibility.

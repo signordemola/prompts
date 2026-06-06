@@ -1,11 +1,6 @@
-name: Sync AI Skills to Client Projects
-# Runs when skills are updated in the master repo.
-# Creates PRs in downstream client projects to keep them in sync.
-#
-# Setup:
-#   1. Create a PAT with repo scope: Settings → Developer Settings → Personal Access Tokens
-#   2. Add it as a repository secret named SKILLS_SYNC_PAT
-#   3. Add your client repos to the matrix below
+name: Skills Updated Notification
+# Creates a GitHub issue when skills are updated, so you know
+# to run `bash .ai-skills/update.sh` in your active projects.
 
 on:
   push:
@@ -13,14 +8,11 @@ on:
     paths:
       - 'ai-skills/docs/**'
       - 'ai-skills/AGENTS.md'
-      - 'ai-skills/USAGE.md'
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
 
 jobs:
-  detect-changes:
+  notify:
     runs-on: ubuntu-latest
-    outputs:
-      changed_areas: ${{ steps.changes.outputs.areas }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,7 +21,10 @@ jobs:
       - name: Detect what changed
         id: changes
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD -- ai-skills/ | head -50)
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- ai-skills/ 2>/dev/null | head -30)
+          COUNT=$(echo "$CHANGED" | wc -l)
+          
+          # Build summary
           AREAS=""
           echo "$CHANGED" | grep -q "workflows/" && AREAS="$AREAS workflows"
           echo "$CHANGED" | grep -q "skills/" && AREAS="$AREAS skills"
@@ -37,73 +32,31 @@ jobs:
           echo "$CHANGED" | grep -q "references/" && AREAS="$AREAS references"
           echo "$CHANGED" | grep -q "AGENTS.md" && AREAS="$AREAS agents"
           echo "$CHANGED" | grep -q "ROUTER.md" && AREAS="$AREAS router"
+          
           echo "areas=$AREAS" >> "$GITHUB_OUTPUT"
-          echo "Changed areas: $AREAS"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "files=$CHANGED" >> "$GITHUB_OUTPUT"
 
-  sync-to-projects:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.changed_areas != ''
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # ──────────────────────────────────────────────────────
-        # ADD YOUR CLIENT REPOS HERE
-        # Format: owner/repo
-        # ──────────────────────────────────────────────────────
-        repo:
-          # - signordemola/client-project-1
-          # - signordemola/client-project-2
-          - signordemola/example-project  # placeholder — replace with real repos
-      fail-fast: false
-
-    steps:
-      - name: Checkout master skills repo
-        uses: actions/checkout@v4
-        with:
-          path: source
-
-      - name: Checkout target project
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ matrix.repo }}
-          token: ${{ secrets.SKILLS_SYNC_PAT }}
-          path: target
-
-      - name: Check if target has ai-skills installed
-        id: check
+      - name: Create notification issue
+        if: steps.changes.outputs.count > 0
         run: |
-          if [ -f "target/docs/ROUTER.md" ]; then
-            echo "installed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "installed=false" >> "$GITHUB_OUTPUT"
-            echo "⏭️ Skipping ${{ matrix.repo }} — ai-skills not installed"
-          fi
+          gh issue create \
+            --title "🔄 Skills updated — run update.sh in active projects" \
+            --body "### AI Skills library was updated
 
-      - name: Sync skills
-        if: steps.check.outputs.installed == 'true'
-        run: |
-          # Copy updated files
-          cp -r source/ai-skills/docs/ target/docs/
-          cp source/ai-skills/AGENTS.md target/AGENTS.md
+          **Changed areas:**${{ steps.changes.outputs.areas }}
 
-          # Preserve symlinks
-          cd target
-          [ -L CLAUDE.md ] || ln -sf AGENTS.md CLAUDE.md
+          Run this in each active project to get the latest:
+          \`\`\`bash
+          bash .ai-skills/update.sh
+          \`\`\`
 
-      - name: Create PR
-        if: steps.check.outputs.installed == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          path: target
-          token: ${{ secrets.SKILLS_SYNC_PAT }}
-          commit-message: "chore(skills): sync ai-skills from upstream"
-          title: "🔄 AI Skills Update"
-          body: |
-            Automated sync from [signordemola/prompts](https://github.com/signordemola/prompts).
+          Or update only what changed:
+          \`\`\`bash
+          bash .ai-skills/update.sh --only <area>
+          \`\`\`
 
-            **Changed areas:** ${{ needs.detect-changes.outputs.changed_areas }}
-
-            Review the changes and merge when ready.
-          branch: chore/sync-ai-skills
-          delete-branch: true
-          labels: ai-skills, automated
+          Close this issue after updating your projects." \
+            --label "skills-update"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

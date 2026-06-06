@@ -6,31 +6,33 @@ A personal knowledge base for AI coding agents + reusable prompt templates.
 
 ```
 ├── ai-skills/           ← Portable AI skills library (install into client projects)
-│   ├── AGENTS.md        ← Agent rules (Karpathy principles)
+│   ├── AGENTS.md        ← Agent rules (11 rules, Karpathy-inspired)
 │   ├── USAGE.md         ← How to install, update, and extend
 │   ├── install.sh       ← Bootstrap script
+│   ├── push-lessons.sh  ← Push project lessons to GitHub
 │   └── docs/            ← Skills, workflows, domains, references
 ├── templates/           ← Standalone prompt templates
-│   ├── pro-research-session.md
-│   ├── user-testing-flow.md
-│   └── opencode-skills-guide.md
 ├── reference/           ← Personal reference docs
-│   └── linux-mint-commands.md
-└── scratch/             ← Drafts and scratch files
+└── .github/workflows/   ← Automation
 ```
 
 ## AI Skills Library
 
-The main product — a portable knowledge base you install into client projects so AI agents follow your engineering workflows.
+Install into any project — everything goes into `.ai-skills/` (gitignored). Zero git footprint.
 
-**Install into any project:**
+**Install:**
 ```bash
 curl -sSL https://raw.githubusercontent.com/signordemola/prompts/main/ai-skills/install.sh | bash
 ```
 
-**Update an existing project:**
+**Update:**
 ```bash
-bash scripts/ai-skills-update.sh
+bash .ai-skills/update.sh
+```
+
+**Push lessons to GitHub:**
+```bash
+bash .ai-skills/push-lessons.sh
 ```
 
 See [ai-skills/USAGE.md](ai-skills/USAGE.md) for full documentation.
@@ -40,19 +42,22 @@ See [ai-skills/USAGE.md](ai-skills/USAGE.md) for full documentation.
 | Component | Count | What |
 |-----------|-------|------|
 | Workflows | 12 | Engineering process (brainstorm → plan → build → verify → ship + self-improvement) |
-| Skills | 17 | Framework & library patterns (Next.js, NestJS, FastAPI, Prisma, Drizzle, Stripe, etc.) |
+| Skills | 17 | Framework & library patterns (Next.js, NestJS, FastAPI, Prisma, Drizzle, Stripe) |
 | Domains | 3 | Business logic (booking, ecommerce, chatbot) |
 | References | 5 | Deep reference docs (API design, migrations, validation, debugging) |
 
-### Automation
+### The Learning Loop
 
-- **Auto-sync**: GitHub Action creates PRs in client projects when skills are updated
-- **Self-learning**: Agents log mistakes to `LESSONS.md`, weekly review creates issues
-- **Cross-agent**: Works with Antigravity, Claude Code, OpenCode, CommandCode, Codex
+```
+Work on project → Agent logs mistakes → You say "reflect"
+→ Agent generates reflection + proposed changes
+→ You push to GitHub as an issue → Review
+→ Apply with a good model → Push → All projects get the fix
+```
 
-## Templates
+### Cross-agent compatible
 
-Standalone prompts for specific tasks — not installed into projects, just referenced when needed.
+Works with Antigravity, Claude Code, OpenCode, Codex, Cursor.
 
 ## License
 
