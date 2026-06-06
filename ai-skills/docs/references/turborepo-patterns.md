@@ -49,7 +49,7 @@ packages:
 catalog:
   react: "^19.0.0"
   typescript: "^5.7.0"
-  "@prisma/client": "^6.4.0"
+  "@prisma/client": "^7.0.0"
   vitest: "^3.0.0"
 ```
 
@@ -58,7 +58,7 @@ catalog:
 {
   "dependencies": {
     "react": "catalog:",        // resolves to ^19.0.0
-    "@prisma/client": "catalog:" // resolves to ^6.4.0
+    "@prisma/client": "catalog:" // resolves to ^7.0.0
   }
 }
 ```

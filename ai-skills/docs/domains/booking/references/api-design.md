@@ -77,9 +77,9 @@ return NextResponse.json({
 import { z } from "zod"
 
 const HoldSchema = z.object({
-  serviceSlug: z.string().min(1),
-  startsAt: z.string().datetime(),
-  sessionId: z.string().min(1),
+  serviceSlug: z.string().check(z.minLength(1)),
+  startsAt: z.iso.datetime(),
+  sessionId: z.string().check(z.minLength(1)),
 })
 
 export async function POST(req: Request) {

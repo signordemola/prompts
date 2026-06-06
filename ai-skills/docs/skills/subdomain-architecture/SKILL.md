@@ -65,12 +65,12 @@ dig booking.clientdomain.com CNAME
 nslookup booking.clientdomain.com
 ```
 
-## Multi-Tenant Middleware
+## Multi-Tenant Proxy (Next.js 16+)
 
-One codebase serving multiple client booking pages:
+One codebase serving multiple client booking pages. In Next.js 16+, `middleware.ts` is deprecated — use `proxy.ts` instead:
 
 ```typescript
-// middleware.ts
+// proxy.ts (replaces middleware.ts in Next.js 16+)
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 

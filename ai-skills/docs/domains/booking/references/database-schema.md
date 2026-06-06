@@ -4,7 +4,7 @@
 
 ```prisma
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
 }
 
 datasource db {

@@ -18,7 +18,7 @@ createSupportTicket: tool({
   description: "Create a support ticket when you cannot resolve the issue or the customer requests a human agent",
   parameters: z.object({
     subject: z.string(),
-    customerEmail: z.string().email(),
+    customerEmail: z.email(),
     priority: z.enum(["LOW", "NORMAL", "HIGH", "URGENT"]),
   }),
   execute: async ({ subject, customerEmail, priority }) => {

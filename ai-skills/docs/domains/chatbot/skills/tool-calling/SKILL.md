@@ -79,7 +79,7 @@ export const chatTools = {
     description: "Escalate to human support when the bot cannot resolve the issue",
     parameters: z.object({
       subject: z.string().describe("Brief summary of the issue"),
-      customerEmail: z.string().email().describe("Customer's email address"),
+      customerEmail: z.email().describe("Customer's email address"),
     }),
     execute: async ({ subject, customerEmail }) => {
       const ticket = await prisma.supportTicket.create({

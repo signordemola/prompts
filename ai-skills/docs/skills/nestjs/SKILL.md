@@ -256,9 +256,9 @@ export class EmailProcessor extends WorkerHost {
 import { z } from "zod"
 
 const envSchema = z.object({
-  DATABASE_URL: z.string().url(),
-  JWT_SECRET: z.string().min(32),
-  REDIS_URL: z.string().url(),
+  DATABASE_URL: z.url(),
+  JWT_SECRET: z.string().check(z.minLength(32)),
+  REDIS_URL: z.url(),
   NODE_ENV: z.enum(["development", "production", "test"]),
 })
 
