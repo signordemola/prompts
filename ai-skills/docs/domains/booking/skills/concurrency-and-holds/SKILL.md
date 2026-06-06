@@ -17,6 +17,11 @@ description: >
 
 ## Double-Booking Prevention
 
+<HARD-GATE>
+**⛔ MANDATORY — EVERY SLOT MUTATION MUST HAVE A UNIQUE CONSTRAINT.**
+Add `@@unique([startsAt, serviceId])` on SlotHold and Appointment models. Do not rely on application-level checks alone — the database MUST enforce uniqueness. Also: every mutation endpoint MUST have an idempotency key.
+</HARD-GATE>
+
 ### Decision: Locking Strategy
 
 | | Optimistic (version column) | Pessimistic (`SELECT FOR UPDATE`) |

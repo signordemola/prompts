@@ -16,6 +16,11 @@ description: >
 
 ## Wizard Steps
 
+<HARD-GATE>
+**⛔ MANDATORY — SERVER-SIDE VALIDATION ON ALL BOOKING INPUTS.**
+Never accept duration from the client (calculate from service). Validate booking windows server-side (minAdvanceHours, maxAdvanceDays). Re-verify slot availability at confirmation, not just at wizard start.
+</HARD-GATE>
+
 | Steps | Flow | Conversion |
 |-------|------|-----------|
 | **3** | Service → DateTime → Payment | Highest (~25%) |

@@ -17,6 +17,11 @@ description: >
 
 ## Slot Generation: On-Demand (Default)
 
+<HARD-GATE>
+**⛔ MANDATORY — ALL SLOT TIMES MUST BE TIMEZONE-SAFE.**
+Store all times in UTC. Convert to provider timezone only for display and slot generation. Always filter expired holds before returning available slots. Never return past time slots.
+</HARD-GATE>
+
 Generate slots at request time from rules + bookings + holds:
 
 ```

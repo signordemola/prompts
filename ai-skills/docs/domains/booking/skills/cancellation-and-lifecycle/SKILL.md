@@ -134,6 +134,11 @@ for (let i = 0; i < weekCount; i++) {
 // Create all holds in one transaction
 ```
 
+<HARD-GATE>
+**⛔ MANDATORY — SECURE MANAGE TOKENS + POLICY-CHECKED REFUNDS.**
+Use cuid/nanoid for manage tokens (never sequential IDs). Always check cancellation tier policy before issuing refunds. Never allow cancellation of completed appointments.
+</HARD-GATE>
+
 ## NEVER
 - ❌ Use sequential IDs for manage tokens (use cuid/nanoid)
 - ❌ Hardcode refund percentages (use config)

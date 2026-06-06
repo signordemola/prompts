@@ -17,6 +17,11 @@ description: >
 
 ## Pre-Auth vs Immediate Capture
 
+<HARD-GATE>
+**⛔ MANDATORY — ALL PRICES MUST BE CALCULATED SERVER-SIDE.**
+Never accept price, amount, or discount values from the client. Read prices from the database. Store amounts in smallest currency unit (pence/cents). Never multiply DB values by 100.
+</HARD-GATE>
+
 | | Pre-Auth (hold → capture) | Immediate Capture |
 |---|---|---|
 | **How** | `capture_method: "manual"` → capture later | Default — charges immediately |
