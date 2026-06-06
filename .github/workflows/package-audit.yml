@@ -1,0 +1,126 @@
+name: Weekly Package Audit
+
+on:
+  schedule:
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check npm package versions
+        id: npm_check
+        run: |
+          echo "## npm Packages" > audit-report.md
+          echo "" >> audit-report.md
+          echo "| Package | Documented | Latest | Status |" >> audit-report.md
+          echo "|---------|-----------|--------|--------|" >> audit-report.md
+
+          check_npm() {
+            local pkg="$1"
+            local documented="$2"
+            local latest
+            latest=$(npm view "$pkg" version 2>/dev/null || echo "not found")
+            local major_latest=$(echo "$latest" | cut -d. -f1)
+            local major_doc=$(echo "$documented" | tr -d '^~' | cut -d. -f1)
+
+            if [ "$major_latest" != "$major_doc" ] && [ "$latest" != "not found" ]; then
+              echo "| $pkg | $documented | $latest | ⚠️ MAJOR UPDATE |" >> audit-report.md
+              echo "NEEDS_UPDATE=true" >> "$GITHUB_ENV"
+            else
+              echo "| $pkg | $documented | $latest | ✅ |" >> audit-report.md
+            fi
+          }
+
+          check_npm "next" "16.x"
+          check_npm "react" "19.x"
+          check_npm "zod" "4.x"
+          check_npm "@tanstack/react-query" "5.x"
+          check_npm "ai" "5.x"
+          check_npm "@ai-sdk/react" "5.x"
+          check_npm "prisma" "7.x"
+          check_npm "@prisma/adapter-pg" "7.x"
+          check_npm "drizzle-orm" "1.x"
+          check_npm "drizzle-kit" "1.x"
+          check_npm "@nestjs/core" "11.x"
+          check_npm "zustand" "5.x"
+          check_npm "vitest" "3.x"
+          check_npm "tailwindcss" "4.x"
+          check_npm "react-hook-form" "7.x"
+          check_npm "uploadthing" "7.x"
+          check_npm "@playwright/test" "1.x"
+          check_npm "hono" "4.x"
+          check_npm "react-email" "6.x"
+          check_npm "resend" "4.x"
+          check_npm "stripe" "17.x"
+          check_npm "date-fns" "4.x"
+          check_npm "@date-fns/tz" "1.x"
+          check_npm "langfuse" "5.x"
+          check_npm "turbo" "2.x"
+          check_npm "husky" "9.x"
+          check_npm "oxlint" "0.x"
+
+      - name: Check PyPI package versions
+        run: |
+          echo "" >> audit-report.md
+          echo "## Python Packages" >> audit-report.md
+          echo "" >> audit-report.md
+          echo "| Package | Documented | Latest | Status |" >> audit-report.md
+          echo "|---------|-----------|--------|--------|" >> audit-report.md
+
+          check_pypi() {
+            local pkg="$1"
+            local documented="$2"
+            local latest
+            latest=$(pip index versions "$pkg" 2>/dev/null | head -1 | grep -oP '\([\d.]+\)' | tr -d '()' || echo "not found")
+            local major_latest=$(echo "$latest" | cut -d. -f1)
+            local major_doc=$(echo "$documented" | tr -d '^~' | cut -d. -f1)
+
+            if [ "$major_latest" != "$major_doc" ] && [ "$latest" != "not found" ]; then
+              echo "| $pkg | $documented | $latest | ⚠️ MAJOR UPDATE |" >> audit-report.md
+              echo "NEEDS_UPDATE=true" >> "$GITHUB_ENV"
+            else
+              echo "| $pkg | $documented | $latest | ✅ |" >> audit-report.md
+            fi
+          }
+
+          check_pypi "fastapi" "0.134+"
+          check_pypi "pydantic" "3.x"
+          check_pypi "sqlalchemy" "2.x"
+          check_pypi "uvicorn" "0.x"
+          check_pypi "ruff" "0.x"
+          check_pypi "alembic" "1.x"
+
+      - name: Add audit date
+        run: |
+          echo "" >> audit-report.md
+          echo "---" >> audit-report.md
+          echo "Audited: $(date -u '+%Y-%m-%d %H:%M UTC')" >> audit-report.md
+
+      - name: Create issue if updates needed
+        if: env.NEEDS_UPDATE == 'true'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "🔄 Weekly Package Audit — Updates Needed"
+          content-filepath: audit-report.md
+          labels: "dependencies,audit"
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-audit-${{ github.run_id }}
+          path: audit-report.md
