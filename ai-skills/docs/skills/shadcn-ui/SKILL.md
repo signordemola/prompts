@@ -20,6 +20,8 @@ description: >
 
 ## Setup
 
+This project uses Base UI (not Radix UI). When initialising, select Base UI in `components.json`.
+
 ```bash
 npx shadcn@latest init
 ```
@@ -131,6 +133,80 @@ import { Button } from "@/components/ui/button"
 <Button variant="ghost" size="icon">×</Button>
 ```
 
+## Form Pattern (React Hook Form + Zod)
+
+```bash
+npx shadcn@latest add form input select
+```
+
+```tsx
+"use client"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+const FormSchema = z.object({
+  name: z.string().trim().min(1, "Required"),
+  email: z.email("Invalid email"),
+})
+
+export const ContactForm = () => {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: { name: "", email: "" },
+  })
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    await createContact(data)
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Jane Smith" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="jane@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={form.formState.isSubmitting}>Submit</Button>
+      </form>
+    </Form>
+  )
+}
+```
+
 ## CLI Commands
 
 | Command | Purpose |
@@ -145,6 +221,8 @@ import { Button } from "@/components/ui/button"
 
 ## NEVER
 - ❌ Modify shadcn source in `node_modules`
-- ❌ Use raw Radix/Base UI when shadcn has the component
+- ❌ Use raw Base UI when shadcn has the component
 - ❌ Hardcode colors instead of using CSS variable tokens
 - ❌ Skip `--diff` when updating components with local changes
+- ❌ Build forms without the `Form`/`FormField` components
+- ❌ Use Radix UI primitives (this project uses Base UI)

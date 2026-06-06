@@ -75,6 +75,7 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | `/upload` | `skills/uploadthing/SKILL.md` | File uploads with Uploadthing v7 |
 | `/e2e` | `skills/playwright/SKILL.md` | E2E testing with Playwright |
 | `/hono` | `skills/hono/SKILL.md` | Hono API framework — edge, multi-runtime |
+| `/scripts` | `skills/project-scripts/SKILL.md` | predev, prebuild, Husky, lint, typecheck, CI |
 
 ## The Workflow Pipeline
 
