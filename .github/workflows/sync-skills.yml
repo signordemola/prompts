@@ -37,6 +37,12 @@ jobs:
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           echo "files=$CHANGED" >> "$GITHUB_OUTPUT"
 
+      - name: Ensure label exists
+        run: |
+          gh label create "skills-update" --color "1d76db" --description "Skills library was updated" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create notification issue
         if: steps.changes.outputs.count > 0
         run: |
@@ -60,3 +66,4 @@ jobs:
             --label "skills-update"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
