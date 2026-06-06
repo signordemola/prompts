@@ -63,6 +63,9 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | `/fastapi` | `skills/fastapi/SKILL.md` | FastAPI Python backend |
 | `/turbo` | `skills/turborepo/SKILL.md` | Turborepo monorepo setup |
 | `/drizzle` | `skills/drizzle-database/SKILL.md` | Drizzle ORM (alternative to Prisma) |
+| `/invoice` | `skills/invoicing/SKILL.md` | Invoice generation, PDF, deposits, tax |
+| `/subdomain` | `skills/subdomain-architecture/SKILL.md` | Subdomain booking systems, multi-tenant, white-label |
+| `/files` | `skills/client-file-delivery/SKILL.md` | Secure file delivery, signed URLs, R2/S3, galleries |
 
 ## The Workflow Pipeline
 
