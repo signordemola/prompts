@@ -1,6 +1,6 @@
 # Streaming Patterns
 
-## SSE with Vercel AI SDK
+## SSE with AI SDK v5
 
 ```ts
 // Server: streamText returns a ReadableStream
@@ -22,12 +22,14 @@ export async function POST(req: Request) {
 }
 ```
 
-## Client: useChat handles everything
+## Client: useChat handles everything (AI SDK v5)
 
 ```tsx
-const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat()
+import { useChat } from "@ai-sdk/react"
 
-// isLoading = true while streaming
+const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat()
+
+// status = "ready" | "streaming" | "error"
 // messages auto-update as chunks arrive
 // stop() cancels the stream mid-response
 ```
@@ -77,7 +79,7 @@ eventSource.onmessage = (event) => {
 
 ```ts
 // If stream breaks mid-response:
-const { messages, reload, error } = useChat()
+const { messages, reload, error } = useChat()  // from @ai-sdk/react
 
 {error && (
   <div className="error">

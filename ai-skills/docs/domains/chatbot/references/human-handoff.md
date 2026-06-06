@@ -16,7 +16,7 @@
 // Tool-based escalation (model decides)
 createSupportTicket: tool({
   description: "Create a support ticket when you cannot resolve the issue or the customer requests a human agent",
-  parameters: z.object({
+  inputSchema: z.object({
     subject: z.string(),
     customerEmail: z.email(),
     priority: z.enum(["LOW", "NORMAL", "HIGH", "URGENT"]),

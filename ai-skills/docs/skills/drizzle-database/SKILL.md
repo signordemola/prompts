@@ -35,7 +35,10 @@ src/db/
 import { drizzle } from "drizzle-orm/node-postgres"
 import * as schema from "./schema"
 
-export const db = drizzle(process.env.DATABASE_URL!, { schema })
+export const db = drizzle(process.env.DATABASE_URL!, {
+  schema,
+  jit: true,  // Drizzle v1: JIT mappers for lower latency
+})
 ```
 
 For Next.js, use a singleton to survive hot reload:
@@ -141,6 +144,8 @@ const user = await getUser.execute({ id: "abc-123" })
 
 ## Migration Workflow
 
+> **Drizzle v1 note:** `journal.json` is removed. Migrations are now grouped into folders. Run `npx drizzle-kit up` to upgrade existing migration folders to the new format.
+
 ```bash
 # Generate migration from schema changes
 npx drizzle-kit generate
@@ -153,6 +158,9 @@ npx drizzle-kit push
 
 # Open visual DB browser
 npx drizzle-kit studio
+
+# Upgrade old migration folder structure to v1 format
+npx drizzle-kit up
 ```
 
 ```ts
@@ -171,13 +179,13 @@ export default defineConfig({
 
 | | Drizzle | Prisma |
 |---|---|---|
-| **Philosophy** | SQL-first, thin wrapper | Schema-first, heavy abstraction |
+| **Philosophy** | SQL-first, thin wrapper | Schema-first, abstraction |
 | **Schema** | TypeScript code (`pgTable()`) | `.prisma` DSL file |
 | **Queries** | SQL-like builder | Fluent API |
 | **Migrations** | SQL files you own | Managed by Prisma |
-| **Bundle size** | ~50KB | ~2MB+ (engine binary) |
+| **Bundle size** | ~50KB | ~200KB (v7 pure TypeScript) |
 | **Type safety** | Full, from schema | Full, generated client |
-| **Raw SQL** | First-class (`sql` tag) | Escape hatch (`$queryRaw`) |
+| **Raw SQL** | First-class (`sql` tag) | TypedSQL (v7) or `$queryRaw` |
 | **Best for** | Performance-critical, SQL-savvy teams | Rapid prototyping, schema-first teams |
 
 **Pick Drizzle when:** You want SQL control, small bundle, edge runtime compatibility.

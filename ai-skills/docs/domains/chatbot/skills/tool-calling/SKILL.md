@@ -22,7 +22,7 @@ import { z } from "zod"
 export const chatTools = {
   getOrderStatus: tool({
     description: "Look up the status and tracking info for a customer order",
-    parameters: z.object({
+    inputSchema: z.object({
       orderNumber: z.number().describe("The order number, e.g. 1042"),
     }),
     execute: async ({ orderNumber }) => {
@@ -42,7 +42,7 @@ export const chatTools = {
 
   checkAvailability: tool({
     description: "Check available appointment slots for a service on a specific date",
-    parameters: z.object({
+    inputSchema: z.object({
       serviceSlug: z.string().describe("The service slug, e.g. classic-lash"),
       date: z.string().describe("Date in YYYY-MM-DD format"),
     }),
@@ -54,7 +54,7 @@ export const chatTools = {
 
   getProductInfo: tool({
     description: "Get details about a product including price and availability",
-    parameters: z.object({
+    inputSchema: z.object({
       productSlug: z.string().describe("The product URL slug"),
     }),
     execute: async ({ productSlug }) => {
@@ -77,7 +77,7 @@ export const chatTools = {
 
   createSupportTicket: tool({
     description: "Escalate to human support when the bot cannot resolve the issue",
-    parameters: z.object({
+    inputSchema: z.object({
       subject: z.string().describe("Brief summary of the issue"),
       customerEmail: z.email().describe("Customer's email address"),
     }),
@@ -145,7 +145,7 @@ const { object } = await generateObject({
 const dangerousTools = {
   cancelOrder: tool({
     description: "Cancel an order. ONLY use after explicit user confirmation.",
-    parameters: z.object({
+    inputSchema: z.object({
       orderNumber: z.number(),
       confirmCancellation: z.boolean().describe("Must be true to proceed"),
     }),

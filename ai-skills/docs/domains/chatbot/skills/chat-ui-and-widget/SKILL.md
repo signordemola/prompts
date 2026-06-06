@@ -14,19 +14,21 @@ description: >
 - Creating an embeddable chat widget
 - Mobile responsiveness and accessibility
 
-## useChat Hook (Vercel AI SDK)
+## useChat Hook (AI SDK v5)
+
+> **AI SDK v5 changes:** `useChat` moved from `ai/react` to `@ai-sdk/react`. Messages are now `UIMessage` (client) vs `ModelMessage` (server). Streaming uses native SSE.
 
 ```tsx
 "use client"
-import { useChat } from "ai/react"
+import { useChat } from "@ai-sdk/react"
 
 export function ChatPanel() {
   const {
-    messages,       // Message[] — full conversation
+    messages,       // UIMessage[] — client-side conversation state
     input,          // current input value
     handleInputChange,
     handleSubmit,
-    isLoading,      // true while streaming
+    status,         // "ready" | "streaming" | "error"
     error,
     reload,         // retry last message
     stop,           // cancel streaming
