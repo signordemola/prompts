@@ -1,6 +1,6 @@
 # Prompts & AI Skills
 
-A personal knowledge base for AI coding agents + reusable prompt templates.
+A personal knowledge base for AI coding agents + reusable prompt templates...
 
 ## Structure
 
