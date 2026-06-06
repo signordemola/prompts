@@ -44,6 +44,7 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 | **requesting-review** | `workflows/requesting-review/SKILL.md` | Completed a task or feature, need review |
 | **receiving-review** | `workflows/receiving-review/SKILL.md` | Got review feedback, before implementing |
 | **dispatching-parallel-agents** | `workflows/dispatching-parallel-agents/SKILL.md` | 2+ independent problems to solve concurrently |
+| **self-improvement** | `workflows/self-improvement/SKILL.md` | Agent made a mistake, hit a gap, or discovered a new pattern |
 
 ### Domain Skills (WHAT you're building)
 

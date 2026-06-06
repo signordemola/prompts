@@ -1,0 +1,40 @@
+name: Review Accumulated Lessons
+# Runs weekly to check if any client projects have accumulated
+# LESSONS.md entries that should be merged back upstream.
+#
+# This creates an issue in the master repo summarizing pending lessons.
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9am UTC
+  workflow_dispatch:
+
+jobs:
+  collect-lessons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for local lessons
+        id: local
+        run: |
+          if [ -f "ai-skills/docs/LESSONS.md" ]; then
+            LESSON_COUNT=$(grep -c "^## " ai-skills/docs/LESSONS.md 2>/dev/null || echo "0")
+            CRITICAL_COUNT=$(grep -c "CRITICAL" ai-skills/docs/LESSONS.md 2>/dev/null || echo "0")
+            echo "count=$LESSON_COUNT" >> "$GITHUB_OUTPUT"
+            echo "critical=$CRITICAL_COUNT" >> "$GITHUB_OUTPUT"
+            echo "content<<EOF" >> "$GITHUB_OUTPUT"
+            cat ai-skills/docs/LESSONS.md >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            echo "critical=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create review issue
+        if: steps.local.outputs.count > 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "📝 ${{ steps.local.outputs.count }} lessons to review (${{ steps.local.outputs.critical }} critical)"
+          content-filepath: ai-skills/docs/LESSONS.md
+          labels: lessons, self-improvement

@@ -93,7 +93,19 @@ npx -y react-doctor@latest .
 
 The score must be 100/100. If it is not 100/100, fix the issues or report every remaining issue with the reason it could not be fixed safely.
 
-For mixed frontend/backend changes, run both relevant quality gates.
+**NestJS Quality Gate**:
+
+Run from the NestJS project root.
+In a Turborepo, this is usually `apps/api` or `apps/server`.
+In a standalone backend project, this is the folder that contains `nest-cli.json` or `@nestjs/core` in `package.json`.
+
+```bash
+npx jest --passWithNoTests
+npx tsc --noEmit
+npx eslint . --ext .ts
+```
+
+All tests must pass. TypeScript must compile with no errors. ESLint must report zero violations.
 
 If a quality tool cannot run because of dependencies, network, sandbox, missing virtualenv, or local environment problems, report:
 

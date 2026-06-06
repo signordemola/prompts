@@ -16,6 +16,7 @@ NO CODE WITHOUT A PLAN FOR NON-TRIVIAL WORK
 ```
 
 <HARD-GATE>
+**⛔ MANDATORY GATE — NO CODE WITHOUT A PLAN FOR NON-TRIVIAL WORK.**
 Do not write implementation code until the plan is written and the user has approved it. Trivial changes (typo fix, config tweak) are exempt. Everything else gets a plan.
 </HARD-GATE>
 

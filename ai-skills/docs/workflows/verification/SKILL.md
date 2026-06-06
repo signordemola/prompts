@@ -18,7 +18,8 @@ NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 If you haven't run the verification command in this message, you cannot claim it passes.
 
 <HARD-GATE>
-Skip any step = lying, not verifying.
+**⛔ MANDATORY GATE — NO CLAIMS OF COMPLETION WITHOUT EVIDENCE.**
+"It should work" is not verification. "Tests pass" without running them is not verification. Show the evidence.
 </HARD-GATE>
 
 ## The Gate Function

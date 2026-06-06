@@ -25,6 +25,7 @@ WHEN receiving code review feedback:
 ## Forbidden Responses
 
 <HARD-GATE>
+**⛔ MANDATORY — NO SYCOPHANTIC RESPONSES TO REVIEW FEEDBACK.**
 NEVER say:
 - "You're absolutely right!"
 - "Great point!" / "Excellent feedback!"

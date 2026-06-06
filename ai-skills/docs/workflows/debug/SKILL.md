@@ -16,6 +16,7 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 ```
 
 <HARD-GATE>
+**⛔ MANDATORY GATE — NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.**
 If you haven't completed Phase 1, you cannot propose fixes. "Just one quick fix" is not a phase. Guessing is not investigating. An obvious fix you haven't verified is still a guess.
 </HARD-GATE>
 
