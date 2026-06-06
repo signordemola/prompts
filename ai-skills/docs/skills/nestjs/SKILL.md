@@ -92,7 +92,8 @@ app.useGlobalPipes(
   }),
 )
 
-// dto/create-user.dto.ts
+// dto/create-user.dto.ts — class-validator (NestJS v11 default)
+// Note: NestJS v12 adds native Zod/Valibot support via Standard Schema
 import { IsEmail, IsString, MinLength } from "class-validator"
 import { ApiProperty } from "@nestjs/swagger"
 
@@ -289,9 +290,10 @@ SwaggerModule.setup("api-docs", app, document)
 
 ```ts
 // Unit test: manual instantiation (fast)
+// Note: NestJS v12 defaults to Vitest. v11 still uses Jest.
 describe("UsersService", () => {
   let service: UsersService
-  const mockPrisma = { user: { findUnique: jest.fn(), create: jest.fn() } }
+  const mockPrisma = { user: { findUnique: vi.fn(), create: vi.fn() } }  // vi for Vitest, jest for Jest
 
   beforeEach(() => {
     service = new UsersService(mockPrisma as any)
