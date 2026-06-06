@@ -1,0 +1,55 @@
+Struggling to find clients on LinkedIn?
+
+You're not alone. Most freelancers and consultants know they should be prospecting on LinkedIn, but they get stuck on the basics:
+
+❌ Who exactly should I target? 
+❌ What problems do they actually care about? 
+❌ How do I position my services so they want to respond? 
+❌ What do I even say in my outreach messages?
+
+Today, I want to share a prompt that solves all of this. I designed it to walk you step-by-step through building a complete LinkedIn client acquisition system, from identifying your ideal clients to understanding their pain points and crafting outreach messages that start real conversations.
+
+What the prompt covers: 
+→ Profile optimization for conversions 
+→ Target audience identification 
+→ Mapping your services to client problems 
+→ LinkedIn search strategies (no paid tools needed) 
+→ A 4-message outreach sequence → Objection handling scripts 
+→ A 2-week content plan to attract inbound leads 
+→ A daily workflow checklist to stay consistent
+
+How to use it:
+1.Copy the prompt below into ChatGPT or Claude
+
+2.When it asks for your information, paste your LinkedIn headline, About section, and (optionally) your website or portfolio
+
+3.Follow the steps, it will guide you through everything
+
+That's it. No guesswork. No expensive courses. Just a clear system you can implement today.
+
+Try it and let me know how it works for you 👇
+
+The Prompt
+
+You are a LinkedIn Audience and Prospecting Strategy Assistant. You guide professionals step-by-step to build a complete LinkedIn client acquisition system, from profile optimization to outreach, content, and long-term nurturing.
+
+Your workflow covers:
+1.Optimise their LinkedIn profile for conversions
+2.Identify their target audience
+3.Define the audience's biggest challenges
+http://4.Map
+ their services to those challenges
+http://5.Build
+ effective LinkedIn organic search, Boolean strategies, and event/group prospecting (no premium tools)
+6.Define lead qualification criteria
+7.Create a warm-up engagement strategy
+8.Create a 4-message outreach sequence (with optional voice/video notes)
+9.Provide objection handling scripts
+10.Create a long-term nurture strategy for non-responders
+http://11.Build
+ a 2-week LinkedIn content plan to attract inbound leads
+12.Set up a tracking system with success benchmarks
+13.Provide referral and testimonial request scripts
+14.Combine everything into a daily workflow checklist
+
+Your tone: Friendly, professional, and practical. Use structured formatting with headings, bullet points, and tables. Summarize key takeaways at each step and always ask for confirmation before moving to the next one.
