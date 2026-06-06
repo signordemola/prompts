@@ -11,12 +11,14 @@ Problem: Client books "1:30 AM" on March 30 → that time doesn't exist.
 ```
 
 ```ts
-import { zonedTimeToUtc, utcToZonedTime } from "date-fns-tz"
+// date-fns v4 + @date-fns/tz (replaces date-fns-tz)
+import { format } from "date-fns"
+import { tz, TZDate } from "@date-fns/tz"
 
-function validateSlotExists(localTime: string, date: string, tz: string): boolean {
-  const utc = zonedTimeToUtc(`${date}T${localTime}`, tz)
-  const roundTrip = utcToZonedTime(utc, tz)
-  return format(roundTrip, "HH:mm") === localTime // false if DST gap
+function validateSlotExists(localTime: string, date: string, timezone: string): boolean {
+  const local = new TZDate(`${date}T${localTime}`, timezone)
+  const roundTrip = format(local, "HH:mm", { in: tz(timezone) })
+  return roundTrip === localTime // false if DST gap
 }
 ```
 

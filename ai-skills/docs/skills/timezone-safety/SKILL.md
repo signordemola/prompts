@@ -4,7 +4,7 @@ description: >
   Prevents timezone bugs in date/time logic. ACTIVATE when: writing any code
   involving dates, times, scheduling, availability, seeding, or Prisma date
   queries. Works for ANY timezone — configure the provider timezone in your
-  project's lib/time.ts. Covers date-fns-tz patterns and known traps.
+  project's lib/time.ts. Covers @date-fns/tz patterns and known traps.
 ---
 
 # Timezone Safety Skill
@@ -40,7 +40,9 @@ export const PROVIDER_TZ = "Australia/Sydney"  // AEST/AEDT auto-switch
 ### Step 1: Import correct utilities
 ```ts
 import { providerDate, providerDateOnly, PROVIDER_TZ } from "@/lib/time"
-import { formatInTimeZone } from "date-fns-tz"
+// date-fns v4: use @date-fns/tz (replaces date-fns-tz)
+import { tz, TZDate } from "@date-fns/tz"
+import { format } from "date-fns"
 ```
 
 If your project uses `londonDate` / `londonDateOnly` names, those are
@@ -82,7 +84,7 @@ const dayOfWeek = new Date(y, mo - 1, d).getDay()
 ```ts
 function d(offsetDays: number, hours: number, minutes = 0): Date {
   const base = new Date(now.getTime() + offsetDays * 86400000)
-  const dateStr = formatInTimeZone(base, PROVIDER_TZ, "yyyy-MM-dd")
+  const dateStr = format(base, "yyyy-MM-dd", { in: tz(PROVIDER_TZ) })
   const timeStr = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`
   return providerDate(dateStr, timeStr)
 }
