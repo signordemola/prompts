@@ -3,14 +3,16 @@ set -euo pipefail
 
 # ai-skills installer / updater
 # Usage:
-#   Install:  curl -sSL https://raw.githubusercontent.com/signordemola/prompts/main/ai-skills/install.sh | bash
-#   Update:   bash scripts/ai-skills-update.sh
-#   Partial:  bash scripts/ai-skills-update.sh --only workflows
-#             bash scripts/ai-skills-update.sh --only domains/booking
-#             bash scripts/ai-skills-update.sh --only skills/stripe-payments
-#             bash scripts/ai-skills-update.sh --only references
+#   Public repo:   curl -sSL https://raw.githubusercontent.com/signordemola/prompts/main/ai-skills/install.sh | bash
+#   Private repo:  gh repo clone signordemola/prompts /tmp/_ai_skills -- --depth 1 && bash /tmp/_ai_skills/ai-skills/install.sh
+#   Update:        bash scripts/ai-skills-update.sh
+#   Partial:       bash scripts/ai-skills-update.sh --only workflows
+#                  bash scripts/ai-skills-update.sh --only domains/booking
+#                  bash scripts/ai-skills-update.sh --only skills/stripe-payments
+#                  bash scripts/ai-skills-update.sh --only references
 
 REPO_URL="https://github.com/signordemola/prompts.git"
+REPO_SSH="git@github.com:signordemola/prompts.git"
 REPO_SUBDIR="ai-skills"
 BRANCH="main"
 TEMP_DIR=""
@@ -76,10 +78,35 @@ done
 
 info "Fetching latest ai-skills from GitHub..."
 TEMP_DIR=$(mktemp -d)
+CLONE_SUCCESS=false
 
-# Shallow clone — fast, minimal bandwidth
-git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_URL" "$TEMP_DIR" 2>/dev/null \
-  || err "Failed to clone repo. Check your internet connection and GitHub access."
+# Strategy 1: gh CLI (works with private repos if logged in)
+if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
+  info "Using GitHub CLI (authenticated)..."
+  if gh repo clone signordemola/prompts "$TEMP_DIR" -- --depth 1 --branch "$BRANCH" --single-branch --quiet 2>/dev/null; then
+    CLONE_SUCCESS=true
+  fi
+fi
+
+# Strategy 2: HTTPS with credential helper (works if git credentials stored)
+if [ "$CLONE_SUCCESS" = false ]; then
+  if git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_URL" "$TEMP_DIR" 2>/dev/null; then
+    CLONE_SUCCESS=true
+  fi
+fi
+
+# Strategy 3: SSH (works if SSH key is set up)
+if [ "$CLONE_SUCCESS" = false ]; then
+  info "HTTPS failed, trying SSH..."
+  if git clone --depth 1 --branch "$BRANCH" --single-branch --quiet "$REPO_SSH" "$TEMP_DIR" 2>/dev/null; then
+    CLONE_SUCCESS=true
+  fi
+fi
+
+if [ "$CLONE_SUCCESS" = false ]; then
+  echo ""
+  err "Could not clone repo. For private repos, run: gh auth login"
+fi
 
 SOURCE="$TEMP_DIR/$REPO_SUBDIR"
 
