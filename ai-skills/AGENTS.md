@@ -51,7 +51,7 @@ If repo rules, docs, code patterns, or user instructions conflict, pick the safe
 
 ## Rule 8 - Log Mistakes
 
-When you make a mistake that the skills library should have caught, or discover a pattern gap, append a structured entry to `docs/LESSONS.md` (create it if missing). Format: what happened, root cause, which skill should fix it. Read `docs/workflows/self-improvement/SKILL.md` for the full template. Also read `docs/LESSONS.md` at the start of each session if it exists.
+When you make a mistake that the skills library should have caught, or discover a pattern gap, append a structured entry to `.ai-skills/LESSONS.md` (create it if missing). Format: what happened, root cause, which skill should fix it. Read `docs/workflows/self-improvement/SKILL.md` for the full template. Also read `.ai-skills/LESSONS.md` at the start of each session if it exists.
 
 ## Rule 9 - No Secret or Env Changes Without Permission
 

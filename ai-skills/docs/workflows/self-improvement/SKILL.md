@@ -1,113 +1,129 @@
 ---
 name: self-improvement
-description: "Use AFTER completing any task where the agent made a mistake, hit a gap in the library, or discovered a pattern worth preserving. Also use when the user says 'log this', 'remember this', or 'update the skills'."
+description: "Use in TWO situations: (1) DURING WORK when you hit a gap or make a mistake — log it to .ai-skills/LESSONS.md. (2) WHEN USER SAYS 'reflect' — generate REFLECTION.md and PROPOSED-CHANGES.md summarizing all lessons from the project."
 ---
 
-# Self-Improvement — Feedback Loop
+# Self-Improvement — Log & Reflect
 
-When you make a mistake, discover a gap, or learn something new, **log it** so the library improves over time.
+This workflow has two modes: **logging** (during work) and **reflecting** (end of project).
 
-**Announce at start:** "I'm logging a lesson learned for the ai-skills library."
+## Mode 1: Logging (During Work)
 
-## The Iron Law
+When you make a mistake, hit a gap, or discover a pattern — append to `.ai-skills/LESSONS.md`.
 
-```
-EVERY MISTAKE BECOMES A LIBRARY UPDATE — NOT JUST A CODE FIX
-```
+**Trigger:** Rule 8 in AGENTS.md fires automatically.
 
-<HARD-GATE>
-**⛔ MANDATORY — DO NOT SILENTLY FIX AND MOVE ON.**
-When you hit a gap or make a mistake that the library should have prevented, you MUST log it. Fixing only the code means the next agent will make the same mistake.
-</HARD-GATE>
-
-## When to Trigger
-
-- You made a mistake the library should have caught
-- You discovered a pattern not covered by any skill
-- A HARD-GATE didn't fire when it should have
-- A skill's code examples were wrong or outdated
-- The user says "remember this" or "log this" or "update the skills"
-- You wasted time because context was missing
-
-## Step 1: Log the Lesson
-
-Append to `docs/LESSONS.md` in the project (create if it doesn't exist):
+**Format:** Append this block to `.ai-skills/LESSONS.md` (create if missing):
 
 ```markdown
-## [DATE] — [Category]
-
-**What happened:** [Brief description of the mistake or gap]
+## [DATE] — [CATEGORY]
+**What happened:** [Brief description]
 **Root cause:** [Why the library didn't prevent this]
-**Which skill should have caught it:** [skill name or "NONE — new skill needed"]
-**Proposed fix:**
-- [ ] [Specific change to make to the skill/reference]
-
-**Severity:** [CRITICAL / IMPORTANT / MINOR]
+**Which skill:** [skill name or "NONE — new skill needed"]
+**Severity:** CRITICAL | IMPORTANT | MINOR
 ```
 
 ### Categories
 
-| Category | Examples |
-|----------|---------|
-| `GATE-MISS` | HARD-GATE didn't fire, wrong trigger conditions |
+| Category | When |
+|----------|------|
+| `GATE-MISS` | A HARD-GATE didn't fire when it should have |
 | `PATTERN-GAP` | No skill covers this pattern |
 | `STALE-EXAMPLE` | Code example is outdated or wrong |
-| `FRAMEWORK-BIAS` | Skill assumed Next.js but project uses NestJS |
-| `MISSING-EDGE-CASE` | Skill covers the happy path but not the edge case |
-| `NEW-PATTERN` | Discovered a reusable pattern worth preserving |
+| `FRAMEWORK-BIAS` | Skill assumed wrong framework |
+| `MISSING-EDGE-CASE` | Happy path only, edge case missing |
+| `NEW-PATTERN` | Discovered a reusable pattern |
 
-## Step 2: Propose the Fix
+<HARD-GATE>
+**⛔ MANDATORY — LOG, DON'T JUST FIX.**
+When you fix a bug that the library should have prevented, you MUST log it. Fixing only the code means the next agent makes the same mistake.
+</HARD-GATE>
 
-After logging, propose the specific skill change:
+---
 
-<Good>
+## Mode 2: Reflecting (End of Project)
+
+**Trigger:** User says "reflect", "generate lessons", or "what did we learn?"
+
+**Announce:** "I'm generating a project reflection and proposed skill changes."
+
+### Step 1: Read Context
+
+Read these files:
+- `.ai-skills/LESSONS.md` (accumulated during work)
+- Your own session history (what you built, what struggled)
+- Which skills from `.ai-skills/docs/` you actually used
+
+### Step 2: Generate REFLECTION.md
+
+Write `.ai-skills/REFLECTION.md`:
+
+```markdown
+# Reflection — [Project Name] ([Date])
+
+## What Worked
+- [Skill/pattern that saved time or prevented bugs]
+- [Workflow that improved quality]
+
+## What Didn't Work
+- [Skill gap that caused a bug or wasted time]
+- [Pattern that was wrong or outdated]
+
+## Mistakes Made
+- [Each mistake from LESSONS.md, summarized]
+
+## New Patterns Discovered
+- [Pattern worth adding to the library]
+- [Include code examples if relevant]
+
+## Recommendations
+- [Specific skills to update, with priority]
 ```
-LESSONS.md entry:
-  What: Agent used float for price calculation, caused rounding errors
-  Root cause: prisma-database skill says "use Int for money" but drizzle-database skill didn't
-  Fix: Add monetary values rule to drizzle-database/SKILL.md NEVER section
-  Severity: CRITICAL
+
+### Step 3: Generate PROPOSED-CHANGES.md
+
+Write `.ai-skills/PROPOSED-CHANGES.md` with **specific, actionable diffs**:
+
+```markdown
+# Proposed Skill Changes
+
+## 1. [skill-name/SKILL.md] — [What to change]
+**Priority:** CRITICAL | IMPORTANT | MINOR
+**Action:** UPDATE | NEW SECTION | NEW SKILL
+
+### Current (what's there now):
+\```
+[existing code/text]
+\```
+
+### Proposed (what it should be):
+\```
+[updated code/text]
+\```
+
+### Why:
+[What went wrong because this was missing/wrong]
 ```
-</Good>
 
-<Bad>
+<HARD-GATE>
+**⛔ MANDATORY — PROPOSED CHANGES MUST BE SPECIFIC.**
+Every proposed change must include the exact file, the exact section, and the exact replacement text. "Update the stripe skill" is not acceptable. "Add Luxon section after line 45 of timezone-safety/SKILL.md with this code: ..." is acceptable.
+</HARD-GATE>
+
+### Step 4: Report to User
+
+After generating both files, tell the user:
+
 ```
-LESSONS.md entry:
-  What: Something went wrong with prices
-  Fix: Be more careful next time
-  — Vague, no actionable fix, will happen again
+✅ Reflection complete.
+
+Files generated:
+  .ai-skills/REFLECTION.md         — Summary of what we learned
+  .ai-skills/PROPOSED-CHANGES.md   — Specific skill updates to review
+
+To push these lessons to GitHub:
+  bash .ai-skills/push-lessons.sh
+
+Then open ~/Documents/prompts with a good model and say:
+  "Apply approved lessons from issue #N"
 ```
-</Bad>
-
-## Step 3: Apply Upstream (if access)
-
-If you have write access to the master repo (`signordemola/prompts`):
-
-1. Make the skill change directly
-2. Remove the lesson from `LESSONS.md` (it's now in the skill)
-3. Commit: `fix(skills): [skill-name] — [what was fixed]`
-
-If you DON'T have write access (client project):
-
-1. Keep the lesson in project-local `docs/LESSONS.md`
-2. At the end of the session, summarize pending lessons for the user
-3. The user can apply them to the master repo later
-
-## Step 4: Periodic Review
-
-At the **start of every new project session**, check if `docs/LESSONS.md` exists:
-
-- If it has entries → read them before starting work
-- Unresolved lessons are context you need
-- CRITICAL lessons should be applied immediately
-
-## Lesson → Skill Mapping
-
-| If the lesson is about... | Update this... |
-|---------------------------|---------------|
-| A workflow that didn't fire | The `description` field in YAML frontmatter |
-| Missing code pattern | Add to the relevant skill's examples |
-| Framework-specific issue | Add framework section to the skill |
-| Edge case not covered | Add to the skill's edge cases / NEVER section |
-| Entirely new topic | Create a new skill or reference file |
-| Wrong architecture advice | Update the domain orchestrator |
