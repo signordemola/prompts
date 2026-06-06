@@ -20,7 +20,7 @@ description: >
 
 ### Step 0: Match the Prisma major version
 
-Prisma 7 uses the `prisma-client` generator, an explicit generated-client output path, ESM, and a driver adapter. Prisma 6 and older commonly use `prisma-client-js` from `@prisma/client`. Check `package.json` and `schema.prisma` before copying examples.
+Prisma 7 uses the `prisma-client` generator, an explicit generated-client output path, ESM, and a driver adapter.
 
 ```prisma
 // Prisma 7+
@@ -31,7 +31,6 @@ generator client {
 ```
 
 ```ts
-// Prisma 7+ PostgreSQL
 import { PrismaClient } from "@/generated/prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 
@@ -72,7 +71,7 @@ export async function getServiceBySlug(slug: string) {
 ```
 
 ### Step 3: Use Prisma's type safety
-- Import generated types from the project's generated client path. Prisma 7 examples use `@/generated/prisma/client`; Prisma 6 examples often use `@prisma/client`.
+- Import generated types from the project's generated client path (e.g. `@/generated/prisma/client`)
 - Never cast to `any` — let Prisma's types catch errors at build time
 - Use `select` to fetch only needed fields
 
@@ -88,8 +87,8 @@ export async function getServiceBySlug(slug: string) {
 - Add `export const dynamic = "force-dynamic"` to all DB-reading pages
 
 ## NEVER
-- ❌ Copy Prisma 6 `new PrismaClient()` examples into Prisma 7 projects without a driver adapter
-- ❌ Generate Prisma 7 client without an explicit `output`
+- ❌ Use `new PrismaClient()` without a driver adapter
+- ❌ Generate client without an explicit `output` in schema.prisma
 - ❌ Pass raw user objects to `where` clauses (operator injection risk)
 - ❌ Use `$queryRaw` with string concatenation
 - ❌ Forget `prisma generate` before `next build` (add to `prebuild` script)

@@ -53,15 +53,22 @@ src/
 
 ## PrismaService (Singleton)
 
-Use the import/constructor pattern that matches the installed Prisma major version. Prisma 7 requires a generated client output path and driver adapter; Prisma 6 commonly imports from `@prisma/client`.
-
 ```ts
-// src/core/prisma/prisma.service.ts — Prisma 6 / prisma-client-js
+// src/core/prisma/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "../../generated/prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+})
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  constructor() {
+    super({ adapter })
+  }
+
   async onModuleInit() {
     await this.$connect()
   }
@@ -80,24 +87,6 @@ import { Global, Module } from "@nestjs/common"
   exports: [PrismaService],
 })
 export class PrismaModule {}
-```
-
-For Prisma 7, import `PrismaClient` from the generated output and pass the database adapter:
-
-```ts
-import { PrismaClient } from "../../generated/prisma/client"
-import { PrismaPg } from "@prisma/adapter-pg"
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-})
-
-@Injectable()
-export class PrismaService extends PrismaClient {
-  constructor() {
-    super({ adapter })
-  }
-}
 ```
 
 ## Validation (Global ValidationPipe)
