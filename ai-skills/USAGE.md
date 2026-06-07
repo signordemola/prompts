@@ -36,7 +36,7 @@ your-project/
     ├── docs/
     │   ├── ROUTER.md       ← Central index
     │   ├── workflows/ (13) ← HOW to work
-    │   ├── skills/ (28)    ← WHAT tools to use
+    │   ├── skills/ (29)    ← WHAT tools to use
     │   ├── domains/ (3)    ← WHAT to build
     │   └── references/     ← Deep reference docs
     ├── update.sh           ← Update from GitHub
@@ -170,7 +170,7 @@ The model edits the skills, you review and push. All future projects get the fix
 | `self-improvement/` | Agent made a mistake, or user says "reflect" |
 | `recovery/` | Something went wrong — diagnose before fixing |
 
-### Skills (28)
+### Skills (29)
 
 | Skill | What |
 |-------|------|
