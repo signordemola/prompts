@@ -11,13 +11,16 @@ Problem: Client books "1:30 AM" on March 30 → that time doesn't exist.
 ```
 
 ```ts
-// date-fns v4 + @date-fns/tz (replaces date-fns-tz)
-import { format } from "date-fns"
-import { tz, TZDate } from "@date-fns/tz"
+// Day.js + timezone plugin
+import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
-function validateSlotExists(localTime: string, date: string, timezone: string): boolean {
-  const local = new TZDate(`${date}T${localTime}`, timezone)
-  const roundTrip = format(local, "HH:mm", { in: tz(timezone) })
+function validateSlotExists(localTime: string, date: string, tz: string): boolean {
+  const parsed = dayjs.tz(`${date} ${localTime}`, tz)
+  const roundTrip = parsed.format("HH:mm")
   return roundTrip === localTime // false if DST gap
 }
 ```
@@ -57,7 +60,7 @@ Solution: Assign to START date. Query by startsAt range:
 Problem: Recurring "every 4 weeks" from Jan 31.
   addWeeks(jan31, 4) = Feb 28 or Feb 29.
 
-Solution: date-fns handles this. For "same day each month":
+Solution: Day.js handles this. For "same day each month":
   clamp to last day of month.
 ```
 

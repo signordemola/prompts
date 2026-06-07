@@ -190,7 +190,7 @@ The model edits the skills, you review and push. All future projects get the fix
 | `security-hardening/` | Security best practices |
 | `seo-performance/` | SEO and performance |
 | `mobile-ux/` | Mobile UX patterns |
-| `timezone-safety/` | Timezone handling (@date-fns/tz) |
+| `timezone-safety/` | Timezone handling (Day.js + timezone plugin) |
 | `deployment-vercel/` | Vercel deployment |
 | `invoicing/` | Invoice generation, PDF, tax |
 | `subdomain-architecture/` | Multi-tenant subdomains |

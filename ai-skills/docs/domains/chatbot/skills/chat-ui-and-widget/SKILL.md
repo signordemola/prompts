@@ -14,9 +14,9 @@ description: >
 - Creating an embeddable chat widget
 - Mobile responsiveness and accessibility
 
-## useChat Hook (AI SDK v5)
+## useChat Hook (AI SDK v6)
 
-> **AI SDK v5 changes:** `useChat` moved from `ai/react` to `@ai-sdk/react`. Messages are now `UIMessage` (client) vs `ModelMessage` (server). `useChat` no longer manages input state internally — keep your own input state and call `sendMessage()`.
+> **AI SDK v6 note:** `useChat` lives in `@ai-sdk/react` (not `ai/react`). Messages are `UIMessage` (client) vs `ModelMessage` (server). `useChat` does not manage input state — keep your own input state and call `sendMessage()`.
 
 ```tsx
 "use client"

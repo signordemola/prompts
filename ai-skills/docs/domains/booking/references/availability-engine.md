@@ -31,7 +31,8 @@ This project uses 15 minutes before and after.
 
 ## Overlap Detection
 
-Use `areIntervalsOverlapping` from date-fns:
+Check overlap manually (Day.js doesn't have `areIntervalsOverlapping`):
+- Two intervals [A_start, A_end) and [B_start, B_end) overlap if `A_start < B_end && B_start < A_end`
 - Intervals sharing only an endpoint do NOT overlap (e.g., 10:00–12:00 and 12:00–14:00 are fine)
 - Include buffer in the appointment interval before checking
 
@@ -44,12 +45,13 @@ Use `areIntervalsOverlapping` from date-fns:
 ## Query Pattern (Timezone-Safe)
 
 ```ts
-const date = londonDateOnly(dateStr)
-const [y, mo, dy] = dateStr.split("-").map(Number)
-const dayOfWeek = new Date(y, mo - 1, dy).getDay()
-const dayEnd = new Date(date.getTime() + 86400000)
+import dayjs, { providerDateOnly, PROVIDER_TZ } from "@/lib/dayjs"
 
-// Query appointments for this London day
+const date = providerDateOnly(dateStr)
+const dayOfWeek = dayjs.tz(dateStr, PROVIDER_TZ).day()
+const dayEnd = dayjs(date).add(1, "day").toDate()
+
+// Query appointments for this provider day
 prisma.appointment.findMany({
   where: {
     startsAt: { gte: date, lt: dayEnd },
@@ -58,8 +60,8 @@ prisma.appointment.findMany({
 })
 ```
 
-**Never use `startOfDay()` or `getDay()` on the `londonDateOnly()` result.**
-See 05_TIMEZONE_HANDLING.md for why.
+**Never use `startOfDay()` or `getDay()` on the `providerDateOnly()` result.**
+See timezone-safety/SKILL.md for why.
 
 ## Multi-Provider (Future)
 

@@ -54,7 +54,7 @@ Use these prompts to test if agents follow each skill correctly.
 ```
 "Query all appointments for June 15th in the dashboard."
 ```
-✅ Should: Use `londonDateOnly("2026-06-15")` directly, NOT `startOfDay()`
+✅ Should: Use `providerDateOnly("2026-06-15")` directly, NOT `startOfDay()`
 ❌ Fail: Uses `startOfDay()` or `new Date("2026-06-15")`
 
 ### stripe-payments
@@ -131,7 +131,7 @@ Use these prompts to test if agents follow each skill correctly.
 ```
 "Build the slot availability endpoint."
 ```
-✅ Should: Load timezone-safety first, use londonDateOnly, check holds + appointments, 15min buffer
+✅ Should: Load timezone-safety first, use providerDateOnly, check holds + appointments, 15min buffer
 ❌ Fail: Uses `new Date()`, ignores holds, no buffer
 
 ---

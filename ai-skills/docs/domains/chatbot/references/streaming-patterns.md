@@ -1,6 +1,6 @@
 # Streaming Patterns
 
-## SSE with AI SDK v5
+## SSE with AI SDK v6
 
 ```ts
 // Server: streamText returns a ReadableStream
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 }
 ```
 
-## Client: useChat handles everything (AI SDK v5)
+## Client: useChat handles everything (AI SDK v6)
 
 ```tsx
 import { useState } from "react"
