@@ -14,15 +14,15 @@ script weekly to check for newer versions.
 | typescript | 5.x | skills/code-style/SKILL.md |
 | zod | 4.x | skills/input-validation/SKILL.md |
 | @tanstack/react-query | 5.x | skills/data-fetching/SKILL.md |
-| ai | 5.x (AI SDK) | domains/chatbot/skills/llm-integration/SKILL.md |
-| @ai-sdk/react | 5.x | domains/chatbot/skills/chat-ui-and-widget/SKILL.md |
+| ai | 6.x (AI SDK) | domains/chatbot/skills/llm-integration/SKILL.md |
+| @ai-sdk/react | 3.x | domains/chatbot/skills/chat-ui-and-widget/SKILL.md |
 | prisma | 7.x | skills/prisma-database/SKILL.md |
 | @prisma/adapter-pg | 7.x | skills/prisma-database/SKILL.md |
-| drizzle-orm | 1.x | skills/drizzle-database/SKILL.md |
-| drizzle-kit | 1.x | skills/drizzle-database/SKILL.md |
+| drizzle-orm | 0.45.x | skills/drizzle-database/SKILL.md |
+| drizzle-kit | 0.31.x | skills/drizzle-database/SKILL.md |
 | @nestjs/core | 11.x (12 alpha) | skills/nestjs/SKILL.md |
 | zustand | 5.x | skills/nextjs-app-router/SKILL.md |
-| vitest | 3.x | workflows/tdd/SKILL.md |
+| vitest | 4.x | workflows/tdd/SKILL.md |
 | tailwindcss | 4.3.x | skills/tailwind-css/SKILL.md |
 | react-hook-form | 7.77.x | skills/react-hook-form/SKILL.md |
 | @hookform/resolvers | latest | skills/react-hook-form/SKILL.md |
@@ -33,24 +33,23 @@ script weekly to check for newer versions.
 | @hono/zod-validator | latest | skills/hono/SKILL.md |
 | @hono/node-server | latest | skills/hono/SKILL.md |
 | react-email | 6.x | skills/email-notifications/SKILL.md |
-| resend | latest | skills/email-notifications/SKILL.md |
+| resend | 6.x | skills/email-notifications/SKILL.md |
 | react-pdf | latest | skills/invoicing/SKILL.md |
-| stripe | latest (Dahlia) | domains/booking/SKILL.md |
+| stripe | 22.x | domains/booking/SKILL.md |
 | @upstash/redis | latest | skills/nextjs-app-router/SKILL.md |
-| date-fns | 4.x | skills/timezone-safety/SKILL.md |
-| @date-fns/tz | 1.5.x | skills/timezone-safety/SKILL.md |
-| langfuse | 5.x | domains/chatbot/references/analytics-observability.md |
+| dayjs | 1.11.x | skills/timezone-safety/SKILL.md |
+| langfuse | 3.x | domains/chatbot/references/analytics-observability.md |
 | turbo | 2.x | skills/turborepo/SKILL.md |
 | husky | 9.x | skills/project-scripts/SKILL.md |
 | lint-staged | latest | skills/project-scripts/SKILL.md |
-| oxlint | latest | skills/project-scripts/SKILL.md |
+| oxlint | 1.x | skills/project-scripts/SKILL.md |
 
 ## Python
 
 | Package | Documented Version | Skill File |
 |---------|--------------------|------------|
 | fastapi | 0.134+ | skills/fastapi/SKILL.md |
-| pydantic | 3.x | skills/fastapi/SKILL.md |
+| pydantic | 2.x | skills/fastapi/SKILL.md |
 | pydantic-settings | latest | skills/fastapi/SKILL.md |
 | sqlalchemy | 2.x (async) | skills/fastapi/SKILL.md |
 | uvicorn | latest | skills/fastapi/SKILL.md |
@@ -71,7 +70,7 @@ packages=(
   "next" "react" "zod" "@tanstack/react-query" "ai" "@ai-sdk/react"
   "prisma" "drizzle-orm" "drizzle-kit" "@nestjs/core" "zustand" "vitest"
   "tailwindcss" "react-hook-form" "uploadthing" "@playwright/test"
-  "hono" "react-email" "resend" "stripe" "date-fns" "@date-fns/tz"
+  "hono" "react-email" "resend" "stripe" "dayjs"
   "langfuse" "turbo" "husky" "oxlint"
 )
 

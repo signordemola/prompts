@@ -3,7 +3,7 @@ name: fastapi
 description: >
   FastAPI production patterns. ACTIVATE when: building a FastAPI backend,
   creating routers/services/repositories, setting up SQLAlchemy async,
-  Pydantic v3 schemas, Alembic migrations, background tasks, or testing.
+  Pydantic v2 schemas, Alembic migrations, background tasks, or testing.
 ---
 
 # FastAPI Framework Skill
@@ -11,7 +11,7 @@ description: >
 ## When to Use
 - Building or modifying a FastAPI backend
 - Database work with SQLAlchemy 2.0 async
-- Pydantic v3 schemas, validation, settings
+- Pydantic v2 schemas, validation, settings
 - Application lifespan (startup/shutdown resources)
 - Background tasks (ARQ/Celery)
 - Testing FastAPI endpoints
@@ -71,7 +71,7 @@ async def get_db():
         yield session
 ```
 
-## Pydantic v3 Schemas
+## Pydantic v2 Schemas
 
 ```python
 from pydantic import BaseModel, EmailStr, field_validator, computed_field
